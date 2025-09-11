@@ -40,6 +40,6 @@ public class LangProvider extends FabricLanguageProvider {
         translationBuilder.add("gui.core_botics.entropyscreen.label_stored_entropy", "Stored Entropy: %d/%d");
         translationBuilder.add("container.core_botics.entropy", "Entropy Collector");
 
-        addText(translationBuilder, MODJAM_ITEM_GROUP.getDisplayName(), "Mod Jam MOD");
+        addText(translationBuilder, MODJAM_ITEM_GROUP.getDisplayName(), "Core Botics");
     }
 }
