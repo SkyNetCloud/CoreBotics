@@ -36,8 +36,6 @@ public class CoreBoticsMain implements ModInitializer {
             fabricItemGroupEntries.add(ItemInit.ConversionCard);
             fabricItemGroupEntries.add(ItemInit.SpeedCard);
         });
-
-
     }
 
     public static Identifier id(String path) {

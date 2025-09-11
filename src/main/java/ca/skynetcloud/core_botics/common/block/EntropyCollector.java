@@ -5,10 +5,7 @@ import ca.skynetcloud.core_botics.common.init.BlockEntityInit;
 import ca.skynetcloud.core_botics.common.item.UpgradeCardItem;
 import ca.skynetcloud.core_botics.common.screen.EntropyScreenHandler;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -21,12 +18,18 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class EntropyCollector extends BlockWithEntity {
 
+
+    private static final VoxelShape BASE_SHAPE = BlockWithEntity.createCuboidShape(0,0,0,16,8,16);
+    private static final VoxelShape CUBE_SHAPE = BlockWithEntity.createCuboidShape(4,8,4,12,16,12);
+    private static final VoxelShape FULL_SHAPE = VoxelShapes.union(BASE_SHAPE, CUBE_SHAPE);
     public static final MapCodec<EntropyCollector> CODEC = createCodec(EntropyCollector::new);
     public static final Text TITLE = Text.translatable("container.core_botics.entropy");
 
@@ -53,6 +56,16 @@ public class EntropyCollector extends BlockWithEntity {
     @Override
     protected float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos) {
         return super.getAmbientOcclusionLightLevel(state, world, pos);
+    }
+
+    @Override
+    protected VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return FULL_SHAPE;
+    }
+
+    @Override
+    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return FULL_SHAPE;
     }
 
     @Override
@@ -87,6 +100,10 @@ public class EntropyCollector extends BlockWithEntity {
 
         return ActionResult.PASS;
     }
+
+
+
+
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {

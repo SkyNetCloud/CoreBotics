@@ -1,0 +1,85 @@
+{
+	"format_version": "1.21.8",
+	"credit": "Made with Blockbench",
+	"texture_size": [128, 128],
+	"textures": {
+		"0": "core_botics:item/entropy_collector",
+		"particle": "core_botics:item/entropy_collector"
+	},
+	"elements": [
+		{
+			"from": [2, 0, 2],
+			"to": [14, 2, 14],
+			"faces": {
+				"north": {"uv": [5.75, 6.75, 7.25, 7], "texture": "#0"},
+				"east": {"uv": [5.75, 7, 7.25, 7.25], "texture": "#0"},
+				"south": {"uv": [2, 7.25, 3.5, 7.5], "texture": "#0"},
+				"west": {"uv": [7.25, 3, 8.75, 3.25], "texture": "#0"},
+				"up": {"uv": [7.5, 1.5, 6, 0], "texture": "#0"},
+				"down": {"uv": [7.5, 1.5, 6, 3], "texture": "#0"}
+			}
+		},
+		{
+			"name": "head_core",
+			"from": [3, 2, 3],
+			"to": [13, 12, 13],
+			"faces": {
+				"north": {"uv": [2, 6, 3.25, 7.25], "texture": "#0"},
+				"east": {"uv": [6, 3, 7.25, 4.25], "texture": "#0"},
+				"south": {"uv": [3.25, 6, 4.5, 7.25], "texture": "#0"},
+				"west": {"uv": [6, 4.25, 7.25, 5.5], "texture": "#0"},
+				"up": {"uv": [5.75, 7.25, 4.5, 6], "texture": "#0"},
+				"down": {"uv": [7.25, 5.5, 6, 6.75], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 2.5, 0],
+			"scale": [0.41016, 0.41016, 0.41016]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 2.5, 0],
+			"scale": [0.41016, 0.41016, 0.41016]
+		},
+		"firstperson_righthand": {
+			"translation": [0, 2.5, 0],
+			"scale": [0.41016, 0.41016, 0.41016]
+		},
+		"firstperson_lefthand": {
+			"translation": [0, 2.5, 0],
+			"scale": [0.41016, 0.41016, 0.41016]
+		},
+		"ground": {
+			"translation": [0, 2.25, 0],
+			"scale": [0.41016, 0.41016, 0.41016]
+		},
+		"gui": {
+			"rotation": [29.75, 39.25, 0],
+			"translation": [0, 2, 0],
+			"scale": [0.74219, 0.74219, 0.74219]
+		},
+		"head": {
+			"translation": [0, 13.25, 0]
+		},
+		"fixed": {
+			"translation": [0, 2, 0]
+		}
+	},
+	"groups": [
+		{
+			"name": "group",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [
+				0,
+				{
+					"name": "head",
+					"origin": [8, 0, 8],
+					"color": 0,
+					"children": [1]
+				}
+			]
+		}
+	]
+}

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "core_botics",
   "version": "${version}",
-  "name": "ModJam",
+  "name": "Core Botics",
   "description": "ModJam Mod For theme The Future",
   "authors": [],
   "contact": {},
@@ -13,7 +13,7 @@
       "ca.skynetcloud.core_botics.client.datagen.ModjamDataGenerator"
     ],
     "client": [
-      "ca.skynetcloud.core_botics.client.ModjamClient"
+      "ca.skynetcloud.core_botics.client.CoreBoticsClient"
     ],
     "main": [
       "ca.skynetcloud.core_botics.CoreBoticsMain"

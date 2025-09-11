@@ -1,0 +1,9 @@
+{
+  "block.core_botics.entropy_collector": "Entropy Collector",
+  "container.core_botics.entropy": "Entropy Collector",
+  "gui.core_botics.entropyscreen.label_stored_entropy": "Stored Entropy: %d/%d",
+  "item.core_botics.conversion_card": "Conversion Card",
+  "item.core_botics.entropy_collector": "Entropy Collector",
+  "item.core_botics.speed_card": "Speed Card",
+  "itemGroup.core_botics": "Mod Jam MOD"
+}
