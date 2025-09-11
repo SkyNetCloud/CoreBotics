@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "core_botics",
+  "version": "${version}",
+  "name": "ModJam",
+  "description": "ModJam Mod For theme The Future",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "ca.skynetcloud.core_botics.client.datagen.ModjamDataGenerator"
+    ],
+    "client": [
+      "ca.skynetcloud.core_botics.client.ModjamClient"
+    ],
+    "main": [
+      "ca.skynetcloud.core_botics.CoreBoticsMain"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

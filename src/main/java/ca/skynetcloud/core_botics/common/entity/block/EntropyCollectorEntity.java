@@ -1,0 +1,285 @@
+package ca.skynetcloud.core_botics.common.entity.block;
+
+import ca.skynetcloud.core_botics.common.init.BlockEntityInit;
+import ca.skynetcloud.core_botics.common.init.BlockInit;
+import ca.skynetcloud.core_botics.common.recipes.EntropyRecipe;
+import ca.skynetcloud.core_botics.common.recipes.EntropyRecipeManager;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.screen.PropertyDelegate;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.world.World;
+import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
+import software.bernie.geckolib.animatable.processing.AnimationController;
+import software.bernie.geckolib.animatable.processing.AnimationTest;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static net.minecraft.block.Blocks.SAND;
+import static net.minecraft.block.Blocks.WITHER_ROSE;
+
+public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntity, BlockEntityTicker<EntropyCollectorEntity> {
+
+    private int storedEntropy = 0;
+    private final int maxStoredEntropy = 10000;
+    private boolean isOpen = false;
+    private int tickCooldown = 0;
+    private int convertCooldown = 0;
+    private static final int TICKS_PER_ENTROPY = 100;
+    private static final int TRANSFORM_TICKS = 50;
+    private static final int TRANSFORM_BLOCK_NEARBY = 500;
+    //boolean usedEntropy = false;
+    boolean IsCrafting = false;
+    public boolean disableByUpgradeCard = false;
+
+    public int speedCard = 0;
+
+    private final Map<UUID, Integer> itemProgress = new HashMap<>();
+    protected static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
+    protected static final RawAnimation CRAFTING = RawAnimation.begin().thenPlay("crafting");
+
+
+
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+    public EntropyCollectorEntity(BlockPos pos, BlockState state) {
+        super(BlockEntityInit.ENTROPY_COLLECTOR_ENTITY, pos, state);
+    }
+
+
+    private PlayState animationPredicate(AnimationTest<EntropyCollectorEntity> test) {
+        test.controller().setAnimation(IDLE);
+        return PlayState.CONTINUE;
+    }
+
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<EntropyCollectorEntity>("idleController", 0, this::animationPredicate).triggerableAnim("crafting", CRAFTING));
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
+    }
+
+    public int getStoredEntropy() {
+        return storedEntropy;
+    }
+    public int getMaxStoredEntropy() {
+        return maxStoredEntropy;
+    }
+
+    public void setOpen(boolean open){
+        this.isOpen = open;
+    }
+
+    public boolean isOpen() {
+        return this.isOpen;
+    }
+
+    public boolean addEntropy(int amount) {
+        if (storedEntropy >= maxStoredEntropy) return false;
+        storedEntropy = Math.min(storedEntropy + amount, maxStoredEntropy);
+        markDirty();
+        return true;
+    }
+
+    public void setStoredEntropy(int value) {
+        storedEntropy = Math.max(0, Math.min(value, maxStoredEntropy));
+        markDirty();
+    }
+
+    private List<ItemEntity> getNearbyItems(World world, BlockPos pos, double radius) {
+        return world.getEntitiesByClass(ItemEntity.class, new Box(
+                pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius,
+                pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius
+        ), item -> !item.isRemoved());
+    }
+
+    private List<Entity> getNearbyEntities(World world, BlockPos pos, double radius) {
+        return world.getEntitiesByClass(Entity.class, new Box(
+                pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius,
+                pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius
+        ), entity -> !entity.isRemoved());
+    }
+
+    public boolean removeEntropy(int amount) {
+        if (storedEntropy <= 0) return false;
+        storedEntropy = Math.max(storedEntropy - amount, 0);
+        markDirty();
+        return true;
+    }
+
+    @Override
+    protected void writeData(WriteView view) {
+        super.writeData(view);
+        view.putInt("entropy", storedEntropy);
+        view.putBoolean("crafting", IsCrafting);
+        view.putBoolean("disabledByCard", disableByUpgradeCard);
+        view.putInt("speedCard", speedCard);
+    }
+
+    @Override
+    public void readData(ReadView view) {
+        super.readData(view);
+        storedEntropy = view.getInt("entropy", 0);
+        IsCrafting = view.getBoolean("crafting", true);
+        disableByUpgradeCard = view.getBoolean("disabledByCard", false);
+        speedCard = view.getInt("speedCard", 0);
+    }
+
+    private final PropertyDelegate propertyDelegate = new PropertyDelegate() {
+        @Override
+        public int get(int index) {
+            return switch (index) {
+                case 0 -> storedEntropy;
+                case 1 -> maxStoredEntropy;
+                default -> 0;
+            };
+        }
+
+        @Override
+        public void set(int index, int value) {
+            if (index == 0) storedEntropy = value;
+        }
+
+        @Override
+        public int size() {
+            return 2;
+        }
+    };
+
+    public PropertyDelegate getPropertyDelegate() {
+        return propertyDelegate;
+    }
+
+    public int getSpeedAddon() {
+        int count = Math.min(this.speedCard, 10);
+        if (count <= 0) return 0;
+
+        return 100 + (int)Math.floor((25 - 2) / 9.0 * (count - 1));
+    }
+
+    @Override
+    public void tick(World world, BlockPos pos, BlockState state, EntropyCollectorEntity be) {
+        boolean usedEntropy = false;
+        if (world.isClient) return;
+        stopTriggeredAnim("idleController", "crafting");
+
+
+
+        if (world.isSkyVisible(pos.up()) && world.isDay()) {
+            if (tickCooldown > 0) {
+                tickCooldown--;
+            }else {
+                int base = 25;
+
+                int bonus = getSpeedAddon();
+
+                be.addEntropy(base * bonus / 10);
+                tickCooldown = TICKS_PER_ENTROPY;
+            }
+        }
+
+        List<Entity> nearbyEntities = getNearbyEntities(world, pos, 3.0);
+        for (Entity entity : nearbyEntities) {
+            if (entity instanceof ZombieEntity && be.getStoredEntropy() >= 500) {
+                entity.remove(Entity.RemovalReason.KILLED);
+
+                PigEntity pig = new PigEntity(EntityType.PIG, world);
+                pig.refreshPositionAndAngles(entity.getX(), entity.getY(), entity.getZ(),
+                        entity.getYaw(), entity.getPitch());
+                world.spawnEntity(pig);
+
+                world.addParticleClient(ParticleTypes.ELECTRIC_SPARK,
+                        entity.getX(), entity.getY() + 0.5, entity.getZ(),
+                        0, 0.05, 0);
+
+                be.removeEntropy(500);
+            }
+        }
+
+
+
+        List<ItemEntity> nearbyItems = getNearbyItems(world, pos, 1.0);
+        for (ItemEntity itemEntity : nearbyItems) {
+            ItemStack stack = itemEntity.getStack();
+
+            for (EntropyRecipe recipe : EntropyRecipeManager.getRecipes()) {
+                if (recipe.matches(stack) && be.getStoredEntropy() >= recipe.entropyCost()) {
+                    UUID id = itemEntity.getUuid();
+                    int progress = itemProgress.getOrDefault(id, 0) + 1;
+                    itemProgress.put(id, progress);
+
+                    double x = itemEntity.getX();
+                    double y = itemEntity.getY() + 0.25;
+                    double z = itemEntity.getZ();
+                    world.addParticleClient(ParticleTypes.ELECTRIC_SPARK, x, y, z, 0, 0.05, 0);
+
+                    if (progress >= TRANSFORM_TICKS) {
+                        stack.decrement(1);
+                        be.removeEntropy(recipe.entropyCost());
+                        ItemEntity newItem = new ItemEntity(world, x, y, z, recipe.craft());
+                        world.spawnEntity(newItem);
+                        triggerAnim("idleController", "crafting");
+                        itemProgress.remove(id);
+                    }
+
+                    break;
+                }
+            }
+        }
+            if (!disableByUpgradeCard) {
+                if (be.getStoredEntropy() == maxStoredEntropy) {
+                    if (convertCooldown == 0) {
+                        for (int i = 0; i < 10; i++) {
+
+
+                            BlockPos below = pos.down();
+                            BlockState blockState = world.getBlockState(below);
+
+                            if (blockState.isAir()) continue;
+                            if (blockState.isOf(Blocks.BEDROCK) || blockState.isOf(WITHER_ROSE) || blockState.isOf(BlockInit.ENTROPY_COLLECTOR_BLOCK))
+                                continue;
+
+
+                            world.setBlockState(below, SAND.getDefaultState());
+                            be.removeEntropy(25);
+                            usedEntropy = true;
+
+                            double x = below.getX() + 0.5;
+                            double y = below.getY() + 1;
+                            double z = below.getZ() + 0.5;
+                            world.addParticleClient(ParticleTypes.ELECTRIC_SPARK, x, y, z, 0, 0.1, 0);
+
+                            convertCooldown = TRANSFORM_BLOCK_NEARBY;
+                            break;
+                        }
+                    }
+                }
+            }
+    }
+
+}
