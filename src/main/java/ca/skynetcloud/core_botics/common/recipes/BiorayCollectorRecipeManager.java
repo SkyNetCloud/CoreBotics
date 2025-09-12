@@ -18,41 +18,41 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntropyRecipeManager {
+public class BiorayCollectorRecipeManager {
 
-    private static final List<EntropyRecipe> RECIPES = new ArrayList<>();
+    private static final List<BiorayCollectorRecipe> RECIPES = new ArrayList<>();
 
     public static void add(Item input, Item output, int entropyCost, String name) {
         if (input == Items.AIR || output == Items.AIR) {
             throw new IllegalArgumentException("Input or output cannot be AIR!");
         }
-        RECIPES.add(new EntropyRecipe(input, output, entropyCost, name));
+        RECIPES.add(new BiorayCollectorRecipe(input, output, entropyCost, name));
     }
 
-    public static EntropyRecipe getRecipe(ItemStack stack) {
-        for (EntropyRecipe recipe : RECIPES) {
+    public static BiorayCollectorRecipe getRecipe(ItemStack stack) {
+        for (BiorayCollectorRecipe recipe : RECIPES) {
             if (recipe.matches(stack)) return recipe;
         }
         return null;
     }
 
-    public static List<EntropyRecipe> getRecipes() {
+    public static List<BiorayCollectorRecipe> getRecipes() {
         return RECIPES;
     }
 
     public static void exportAllRecipes(FabricDataOutput output) {
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-        for (EntropyRecipe recipe : RECIPES) {
+        for (BiorayCollectorRecipe recipe : RECIPES) {
             JsonObject json = new JsonObject();
             json.addProperty("input", Registries.ITEM.getId(recipe.input()).toString());
             json.addProperty("output", Registries.ITEM.getId(recipe.output()).toString());
-            json.addProperty("entropy_cost", recipe.entropyCost());
+            json.addProperty("bioray_cost", recipe.bioraycost());
 
             Path path = output.getPath()
                     .resolve("data")
                     .resolve(CoreBoticsMain.MODID)
-                    .resolve("data/core_botics/entropy_recipes")
+                    .resolve("data/core_botics/bioray_recipes")
                     .resolve(recipe.name() + ".json");
 
             try {
@@ -72,7 +72,7 @@ public class EntropyRecipeManager {
         CoreBoticsMain.LOGGER.info("Loading entropy recipes from resources...");
         try {
             ClassLoader loader = CoreBoticsMain.class.getClassLoader();
-            String folder = "data/core_botics/entropy_recipes/";
+            String folder = "data/core_botics/bioray_recipes/";
             var resources = loader.getResources(folder);
 
             while (resources.hasMoreElements()) {
@@ -86,7 +86,7 @@ public class EntropyRecipeManager {
                             JsonObject json = new Gson().fromJson(jsonString, JsonObject.class);
                             String inputId = json.get("input").getAsString();
                             String outputId = json.get("output").getAsString();
-                            int cost = json.get("entropy_cost").getAsInt();
+                            int cost = json.get("bioray_cost").getAsInt();
 
                             Item input = Registries.ITEM.get(Identifier.of(inputId));
                             Item output = Registries.ITEM.get(Identifier.of(outputId));
@@ -111,7 +111,7 @@ public class EntropyRecipeManager {
 
                                         String inputId = json.get("input").getAsString();
                                         String outputId = json.get("output").getAsString();
-                                        int cost = json.get("entropy_cost").getAsInt();
+                                        int cost = json.get("bioray_cost").getAsInt();
 
                                         Item input = Registries.ITEM.get(Identifier.of(inputId));
                                         Item output = Registries.ITEM.get(Identifier.of(outputId));

@@ -1,6 +1,7 @@
 package ca.skynetcloud.core_botics.common.init;
 
-import ca.skynetcloud.core_botics.common.block.EntropyCollector;
+import ca.skynetcloud.core_botics.common.block.BiorayCollector;
+import ca.skynetcloud.core_botics.common.block.DeactivatedRobotBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
@@ -21,8 +22,8 @@ public class BlockInit {
 
     public static void initialize() {}
 
-    public static final Block ENTROPY_COLLECTOR_BLOCK = register("entropy_collector", EntropyCollector::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque(), true);
-
+    public static final Block BIORAY_COLLECTOR_BLOCK = register("bioray_collector", BiorayCollector::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().noBlockBreakParticles(), true);
+    public static final Block DEACTIVATED_ROBOT = register("deactivated_robot", DeactivatedRobotBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.DRIED_GHAST).nonOpaque(), true);
 
     private static Block register(String name, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings settings, boolean shouldRegisterItem) {
 
@@ -31,9 +32,7 @@ public class BlockInit {
 
         if (shouldRegisterItem) {
             RegistryKey<Item> itemKey = keyOfItem(name);
-
             BlockItem blockItem = new BlockItem(block, new Item.Settings().registryKey(itemKey));
-
             Registry.register(Registries.ITEM, itemKey, blockItem);
         }
 
@@ -43,8 +42,6 @@ public class BlockInit {
     private static RegistryKey<Block> keyOfBlock(String name) {
         return RegistryKey.of(RegistryKeys.BLOCK, Identifier.of(MODID, name));
     }
-
-
 
 
     private static RegistryKey<Item> keyOfItem(String name) {

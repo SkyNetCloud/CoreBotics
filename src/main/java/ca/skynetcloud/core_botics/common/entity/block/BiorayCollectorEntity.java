@@ -2,8 +2,8 @@ package ca.skynetcloud.core_botics.common.entity.block;
 
 import ca.skynetcloud.core_botics.common.init.BlockEntityInit;
 import ca.skynetcloud.core_botics.common.init.BlockInit;
-import ca.skynetcloud.core_botics.common.recipes.EntropyRecipe;
-import ca.skynetcloud.core_botics.common.recipes.EntropyRecipeManager;
+import ca.skynetcloud.core_botics.common.recipes.BiorayCollectorRecipe;
+import ca.skynetcloud.core_botics.common.recipes.BiorayCollectorRecipeManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -11,9 +11,11 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.storage.ReadView;
@@ -38,10 +40,10 @@ import java.util.UUID;
 import static net.minecraft.block.Blocks.SAND;
 import static net.minecraft.block.Blocks.WITHER_ROSE;
 
-public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntity, BlockEntityTicker<EntropyCollectorEntity> {
+public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity, BlockEntityTicker<BiorayCollectorEntity> {
 
-    private int storedEntropy = 0;
-    private final int maxStoredEntropy = 10000;
+    private int storedBioray = 0;
+    private final int maxStoredBioray = 10000;
     private boolean isOpen = false;
     private int tickCooldown = 0;
     private int convertCooldown = 0;
@@ -60,15 +62,15 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
 
 
 
-
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public EntropyCollectorEntity(BlockPos pos, BlockState state) {
+    public BiorayCollectorEntity(BlockPos pos, BlockState state) {
         super(BlockEntityInit.ENTROPY_COLLECTOR_ENTITY, pos, state);
     }
 
 
-    private PlayState animationPredicate(AnimationTest<EntropyCollectorEntity> test) {
+
+    private PlayState animationPredicate(AnimationTest<BiorayCollectorEntity> test) {
         test.controller().setAnimation(IDLE);
         return PlayState.CONTINUE;
     }
@@ -76,7 +78,7 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<EntropyCollectorEntity>("idleController", 0, this::animationPredicate).triggerableAnim("crafting", CRAFTING));
+        controllers.add(new AnimationController<BiorayCollectorEntity>("idleController", 0, this::animationPredicate).triggerableAnim("crafting", CRAFTING));
     }
 
     @Override
@@ -84,11 +86,11 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
         return this.cache;
     }
 
-    public int getStoredEntropy() {
-        return storedEntropy;
+    public int getStoredBioray() {
+        return storedBioray;
     }
-    public int getMaxStoredEntropy() {
-        return maxStoredEntropy;
+    public int getMaxStoredBioray() {
+        return maxStoredBioray;
     }
 
     public void setOpen(boolean open){
@@ -99,15 +101,15 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
         return this.isOpen;
     }
 
-    public boolean addEntropy(int amount) {
-        if (storedEntropy >= maxStoredEntropy) return false;
-        storedEntropy = Math.min(storedEntropy + amount, maxStoredEntropy);
+    public boolean addBioray(int amount) {
+        if (storedBioray >= maxStoredBioray) return false;
+        storedBioray = Math.min(storedBioray + amount, maxStoredBioray);
         markDirty();
         return true;
     }
 
-    public void setStoredEntropy(int value) {
-        storedEntropy = Math.max(0, Math.min(value, maxStoredEntropy));
+    public void setStoredBioray(int value) {
+        storedBioray = Math.max(0, Math.min(value, maxStoredBioray));
         markDirty();
     }
 
@@ -125,9 +127,9 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
         ), entity -> !entity.isRemoved());
     }
 
-    public boolean removeEntropy(int amount) {
-        if (storedEntropy <= 0) return false;
-        storedEntropy = Math.max(storedEntropy - amount, 0);
+    public boolean removeBioray(int amount) {
+        if (storedBioray <= 0) return false;
+        storedBioray = Math.max(storedBioray - amount, 0);
         markDirty();
         return true;
     }
@@ -135,7 +137,7 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
     @Override
     protected void writeData(WriteView view) {
         super.writeData(view);
-        view.putInt("entropy", storedEntropy);
+        view.putInt("bioray", storedBioray);
         view.putBoolean("crafting", IsCrafting);
         view.putBoolean("disabledByCard", disableByUpgradeCard);
         view.putInt("speedCard", speedCard);
@@ -144,7 +146,7 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
     @Override
     public void readData(ReadView view) {
         super.readData(view);
-        storedEntropy = view.getInt("entropy", 0);
+        storedBioray = view.getInt("bioray", 0);
         IsCrafting = view.getBoolean("crafting", true);
         disableByUpgradeCard = view.getBoolean("disabledByCard", false);
         speedCard = view.getInt("speedCard", 0);
@@ -154,15 +156,15 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
         @Override
         public int get(int index) {
             return switch (index) {
-                case 0 -> storedEntropy;
-                case 1 -> maxStoredEntropy;
+                case 0 -> storedBioray;
+                case 1 -> maxStoredBioray;
                 default -> 0;
             };
         }
 
         @Override
         public void set(int index, int value) {
-            if (index == 0) storedEntropy = value;
+            if (index == 0) storedBioray = value;
         }
 
         @Override
@@ -183,7 +185,7 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
     }
 
     @Override
-    public void tick(World world, BlockPos pos, BlockState state, EntropyCollectorEntity be) {
+    public void tick(World world, BlockPos pos, BlockState state, BiorayCollectorEntity be) {
         boolean usedEntropy = false;
         if (world.isClient) return;
         stopTriggeredAnim("idleController", "crafting");
@@ -198,14 +200,17 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
 
                 int bonus = getSpeedAddon();
 
-                be.addEntropy(base * bonus / 10);
+                be.addBioray(base * bonus / 10);
                 tickCooldown = TICKS_PER_ENTROPY;
             }
         }
 
         List<Entity> nearbyEntities = getNearbyEntities(world, pos, 3.0);
         for (Entity entity : nearbyEntities) {
-            if (entity instanceof ZombieEntity && be.getStoredEntropy() >= 500) {
+
+
+
+            if (entity instanceof ZombieEntity && be.getStoredBioray() >= 500) {
                 entity.remove(Entity.RemovalReason.KILLED);
 
                 PigEntity pig = new PigEntity(EntityType.PIG, world);
@@ -217,7 +222,7 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
                         entity.getX(), entity.getY() + 0.5, entity.getZ(),
                         0, 0.05, 0);
 
-                be.removeEntropy(500);
+                be.removeBioray(500);
             }
         }
 
@@ -227,8 +232,16 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
         for (ItemEntity itemEntity : nearbyItems) {
             ItemStack stack = itemEntity.getStack();
 
-            for (EntropyRecipe recipe : EntropyRecipeManager.getRecipes()) {
-                if (recipe.matches(stack) && be.getStoredEntropy() >= recipe.entropyCost()) {
+            if (stack.isOf(Items.NETHER_STAR) && be.getStoredBioray() >= maxStoredBioray) {
+                WitherEntity wither = new WitherEntity(EntityType.WITHER, world);
+                wither.refreshPositionAndAngles(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 0, 0);
+                world.spawnEntity(wither);
+                stack.decrement(1);
+                be.removeBioray(maxStoredBioray);
+            }
+
+            for (BiorayCollectorRecipe recipe : BiorayCollectorRecipeManager.getRecipes()) {
+                if (recipe.matches(stack) && be.getStoredBioray() >= recipe.bioraycost()) {
                     UUID id = itemEntity.getUuid();
                     int progress = itemProgress.getOrDefault(id, 0) + 1;
                     itemProgress.put(id, progress);
@@ -240,7 +253,7 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
 
                     if (progress >= TRANSFORM_TICKS) {
                         stack.decrement(1);
-                        be.removeEntropy(recipe.entropyCost());
+                        be.removeBioray(recipe.bioraycost());
                         ItemEntity newItem = new ItemEntity(world, x, y, z, recipe.craft());
                         world.spawnEntity(newItem);
                         triggerAnim("idleController", "crafting");
@@ -252,7 +265,7 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
             }
         }
             if (!disableByUpgradeCard) {
-                if (be.getStoredEntropy() == maxStoredEntropy) {
+                if (be.getStoredBioray() == maxStoredBioray) {
                     if (convertCooldown == 0) {
                         for (int i = 0; i < 10; i++) {
 
@@ -261,12 +274,12 @@ public class EntropyCollectorEntity extends BlockEntity implements GeoBlockEntit
                             BlockState blockState = world.getBlockState(below);
 
                             if (blockState.isAir()) continue;
-                            if (blockState.isOf(Blocks.BEDROCK) || blockState.isOf(WITHER_ROSE) || blockState.isOf(BlockInit.ENTROPY_COLLECTOR_BLOCK))
+                            if (blockState.isOf(Blocks.BEDROCK) || blockState.isOf(WITHER_ROSE) || blockState.isOf(BlockInit.BIORAY_COLLECTOR_BLOCK))
                                 continue;
 
 
                             world.setBlockState(below, SAND.getDefaultState());
-                            be.removeEntropy(25);
+                            be.removeBioray(25);
                             usedEntropy = true;
 
                             double x = below.getX() + 0.5;

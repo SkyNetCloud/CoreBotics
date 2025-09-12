@@ -4,13 +4,13 @@
   "version": "${version}",
   "name": "Core Botics",
   "description": "ModJam Mod For theme The Future",
-  "authors": [],
+  "authors": ["SkyNetCloud", "Rainova"],
   "contact": {},
   "license": "MIT",
   "environment": "*",
   "entrypoints": {
     "fabric-datagen": [
-      "ca.skynetcloud.core_botics.client.datagen.ModjamDataGenerator"
+      "ca.skynetcloud.core_botics.client.datagen.CoreBoticsDataGenerator"
     ],
     "client": [
       "ca.skynetcloud.core_botics.client.CoreBoticsClient"

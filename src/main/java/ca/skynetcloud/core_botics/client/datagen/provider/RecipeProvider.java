@@ -1,7 +1,7 @@
 package ca.skynetcloud.core_botics.client.datagen.provider;
 
 
-import ca.skynetcloud.core_botics.common.recipes.EntropyRecipeManager;
+import ca.skynetcloud.core_botics.common.recipes.BiorayCollectorRecipeManager;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.data.recipe.RecipeExporter;
@@ -22,9 +22,9 @@ public class RecipeProvider extends FabricRecipeProvider {
 
     @Override
     protected RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup registryLookup, RecipeExporter exporter) {
-        EntropyRecipeManager.add(Items.IRON_INGOT, Items.DIAMOND, 10, "diamond_from_iron");
-        EntropyRecipeManager.add(Items.COPPER_INGOT, Items.GOLD_INGOT, 15, "gold_from_copper");
-        EntropyRecipeManager.exportAllRecipes(output);
+        BiorayCollectorRecipeManager.add(Items.IRON_INGOT, Items.DIAMOND, 10, "diamond_from_iron");
+        BiorayCollectorRecipeManager.add(Items.COPPER_INGOT, Items.GOLD_INGOT, 15, "gold_from_copper");
+        BiorayCollectorRecipeManager.exportAllRecipes(output);
         return null;
     }
 

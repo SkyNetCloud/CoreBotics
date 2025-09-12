@@ -9,11 +9,11 @@ import net.minecraft.util.Identifier;
 
 import static ca.skynetcloud.core_botics.CoreBoticsMain.MODID;
 
-public class EntropyInfoScreen extends HandledScreen<EntropyScreenHandler> {
+public class BiorayCollectorInfoScreen extends HandledScreen<BiorayCollectorScreenHandler> {
 
-    private static final Identifier TEXTURE = Identifier.of(MODID,"textures/gui/container/entropy_screen.png");
+    private static final Identifier TEXTURE = Identifier.of(MODID,"textures/gui/container/bioray_collector_screen.png");
 
-    public EntropyInfoScreen(EntropyScreenHandler handler, PlayerInventory inventory, Text title) {
+    public BiorayCollectorInfoScreen(BiorayCollectorScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         this.backgroundHeight = 166;
         this.backgroundWidth =  175;
@@ -33,7 +33,7 @@ public class EntropyInfoScreen extends HandledScreen<EntropyScreenHandler> {
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
         super.renderBackground(context, mouseX, mouseY, deltaTicks);
 
-        int storedEntropy = handler.getStoredEntropy();
+        int storedEntropy = handler.getStoredBioray();
         int maxEntropy = handler.getMaxEntropy();
 
         context.drawText(this.textRenderer, Text.translatable("gui.core_botics.entropyscreen.label_stored_entropy", storedEntropy, maxEntropy), this.x + 11, this.y + 36, -12829636, false);

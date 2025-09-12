@@ -1,6 +1,6 @@
 package ca.skynetcloud.core_botics.common.item;
 
-import ca.skynetcloud.core_botics.common.entity.block.EntropyCollectorEntity;
+import ca.skynetcloud.core_botics.common.entity.block.BiorayCollectorEntity;
 import ca.skynetcloud.core_botics.common.init.ItemInit;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,7 +31,7 @@ public class UpgradeCardItem extends Item {
         ItemStack stack = context.getStack();
 
         if (stack.isOf(SpeedCard)) {
-            if (be instanceof EntropyCollectorEntity collector) {
+            if (be instanceof BiorayCollectorEntity collector) {
                 if (collector.speedCard < 10) {
                     collector.speedCard++;
                     collector.markDirty();
@@ -54,7 +54,7 @@ public class UpgradeCardItem extends Item {
 
 
         if (stack.isOf(ItemInit.ConversionCard)) {
-            if (be instanceof EntropyCollectorEntity collector) {
+            if (be instanceof BiorayCollectorEntity collector) {
                 collector.disableByUpgradeCard = !collector.disableByUpgradeCard;
                 collector.markDirty();
 

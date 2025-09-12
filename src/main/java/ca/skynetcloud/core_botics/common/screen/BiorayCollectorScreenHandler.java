@@ -1,6 +1,6 @@
 package ca.skynetcloud.core_botics.common.screen;
 
-import ca.skynetcloud.core_botics.common.entity.block.EntropyCollectorEntity;
+import ca.skynetcloud.core_botics.common.entity.block.BiorayCollectorEntity;
 import ca.skynetcloud.core_botics.common.init.ScreenHandlerInit;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -12,12 +12,12 @@ import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 
 
-public class EntropyScreenHandler extends ScreenHandler {
+public class BiorayCollectorScreenHandler extends ScreenHandler {
 
     private final PropertyDelegate propertyDelegate;
     private final ScreenHandlerContext context;
 
-    public EntropyScreenHandler(int syncId, PlayerInventory playerInventory, PropertyDelegate propertyDelegate, ScreenHandlerContext context) {
+    public BiorayCollectorScreenHandler(int syncId, PlayerInventory playerInventory, PropertyDelegate propertyDelegate, ScreenHandlerContext context) {
         super(ScreenHandlerInit.ENTROPY_SCREEN_HANDLER, syncId);
         this.propertyDelegate = propertyDelegate;
         this.context = context;
@@ -40,11 +40,11 @@ public class EntropyScreenHandler extends ScreenHandler {
 
     }
 
-    public EntropyScreenHandler(int syncId, PlayerInventory playerInventory) {
+    public BiorayCollectorScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, new ArrayPropertyDelegate(2), ScreenHandlerContext.EMPTY);
     }
 
-    public int getStoredEntropy() {
+    public int getStoredBioray() {
         return propertyDelegate.get(0);
     }
 
@@ -66,7 +66,7 @@ public class EntropyScreenHandler extends ScreenHandler {
     public void onClosed(PlayerEntity player) {
         super.onClosed(player);
         this.context.run((world, blockPos) -> {
-            if (world.getBlockEntity(blockPos) instanceof EntropyCollectorEntity entropyCollectorEntity) {
+            if (world.getBlockEntity(blockPos) instanceof BiorayCollectorEntity entropyCollectorEntity) {
                entropyCollectorEntity.setOpen(false);
             }
         } );

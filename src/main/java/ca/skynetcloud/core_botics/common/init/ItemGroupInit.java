@@ -13,6 +13,6 @@ import static net.minecraft.registry.RegistryKeys.ITEM_GROUP;
 public class ItemGroupInit {
 
     public static final RegistryKey<ItemGroup> MOD_JAM_ITEM_GROUP_KEY = RegistryKey.of(ITEM_GROUP, Identifier.of(MODID, "item_group"));
-    public static final ItemGroup MODJAM_ITEM_GROUP = FabricItemGroup.builder().icon(() -> new ItemStack(BlockInit.ENTROPY_COLLECTOR_BLOCK.asItem())).displayName(Text.translatable("itemGroup.core_botics")).build();
+    public static final ItemGroup MODJAM_ITEM_GROUP = FabricItemGroup.builder().icon(() -> new ItemStack(BlockInit.BIORAY_COLLECTOR_BLOCK.asItem())).displayName(Text.translatable("itemGroup.core_botics")).build();
 
 }

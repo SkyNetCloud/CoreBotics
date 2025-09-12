@@ -1,5 +1,5 @@
 {
   "input": "minecraft:iron_ingot",
   "output": "minecraft:diamond",
-  "entropy_cost": 10
+  "bioray_cost": 10
 }

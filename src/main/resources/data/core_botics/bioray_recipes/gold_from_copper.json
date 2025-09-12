@@ -1,5 +1,5 @@
 {
   "input": "minecraft:copper_ingot",
   "output": "minecraft:gold_ingot",
-  "entropy_cost": 15
+  "bioray_cost": 15
 }

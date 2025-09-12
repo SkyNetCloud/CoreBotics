@@ -31,14 +31,15 @@ public class LangProvider extends FabricLanguageProvider {
 
     @Override
     public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
-        translationBuilder.add(BlockInit.ENTROPY_COLLECTOR_BLOCK, "Entropy Collector");
-        translationBuilder.add(BlockInit.ENTROPY_COLLECTOR_BLOCK.asItem(), "Entropy Collector");
+        translationBuilder.add(BlockInit.BIORAY_COLLECTOR_BLOCK, "Bioray Collector");
+        translationBuilder.add(BlockInit.BIORAY_COLLECTOR_BLOCK.asItem(), "Bioray Collector");
+        translationBuilder.add(BlockInit.DEACTIVATED_ROBOT.asItem(), "Deactivated Robot");
 
         translationBuilder.add(ItemInit.SpeedCard, "Speed Card");
         translationBuilder.add(ItemInit.ConversionCard, "Conversion Card");
 
-        translationBuilder.add("gui.core_botics.entropyscreen.label_stored_entropy", "Stored Entropy: %d/%d");
-        translationBuilder.add("container.core_botics.entropy", "Entropy Collector");
+        translationBuilder.add("gui.core_botics.entropyscreen.label_stored_entropy", "Stored Bioray: %d/%d");
+        translationBuilder.add("container.core_botics.entropy", "Bioray Collector");
 
         addText(translationBuilder, MODJAM_ITEM_GROUP.getDisplayName(), "Core Botics");
     }

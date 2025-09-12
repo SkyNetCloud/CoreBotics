@@ -4,7 +4,7 @@ import ca.skynetcloud.core_botics.client.datagen.provider.LangProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
-public class ModjamDataGenerator implements DataGeneratorEntrypoint {
+public class CoreBoticsDataGenerator implements DataGeneratorEntrypoint {
 
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
