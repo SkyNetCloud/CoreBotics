@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "core_botics:item/deactivated_robot"
+  }
+}

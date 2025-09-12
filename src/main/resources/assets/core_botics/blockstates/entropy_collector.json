@@ -1,5 +1,0 @@
-{
-  "variants": {
-    "": { "model": "core_botics:block/entropy_collector" }
-  }
-}

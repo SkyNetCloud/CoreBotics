@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "core_botics:block/entropy_collector"
+    "all": "core_botics:block/bioray_collector"
   }
 }
