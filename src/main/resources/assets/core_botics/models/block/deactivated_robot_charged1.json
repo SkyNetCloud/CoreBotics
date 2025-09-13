@@ -1,0 +1,79 @@
+{
+  "format_version": "1.21.6",
+  "credit": "Made with Blockbench",
+  "texture_size": [64, 64],
+  "textures": {
+    "0": "core_botics:block/deactivated_robot_charged0",
+    "particle": "core_botics:block/deactivated_robot_charged0"
+  },
+  "elements": [
+    {
+      "name": "head",
+      "from": [3, 0, 4],
+      "to": [13, 9, 12],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+      "faces": {
+        "north": {"uv": [2, 2, 4.5, 4.25], "texture": "#0"},
+        "east": {"uv": [0, 2, 2, 4.25], "texture": "#0"},
+        "south": {"uv": [6.5, 2, 9, 4.25], "texture": "#0"},
+        "west": {"uv": [4.5, 2, 6.5, 4.25], "texture": "#0"},
+        "up": {"uv": [4.5, 2, 2, 0], "texture": "#0"},
+        "down": {"uv": [7, 0, 4.5, 2], "texture": "#0"}
+      }
+    },
+    {
+      "name": "face",
+      "from": [4, 1, 3.65],
+      "to": [12, 8, 9],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+      "faces": {
+        "north": {"uv": [1.25, 5.5, 3.25, 7.25], "texture": "#0"},
+        "east": {"uv": [0, 5.5, 1.25, 7.25], "texture": "#0"},
+        "south": {"uv": [4.5, 5.5, 6.5, 7.25], "texture": "#0"},
+        "west": {"uv": [3.25, 5.5, 4.5, 7.25], "texture": "#0"},
+        "up": {"uv": [3.25, 5.5, 1.25, 4.25], "texture": "#0"},
+        "down": {"uv": [5.25, 4.25, 3.25, 5.5], "texture": "#0"}
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "scale": [0.46484, 0.46484, 0.46484]
+    },
+    "thirdperson_lefthand": {
+      "scale": [0.46484, 0.46484, 0.46484]
+    },
+    "ground": {
+      "translation": [0, 4.25, 0],
+      "scale": [0.76563, 0.76563, 0.76563]
+    },
+    "gui": {
+      "rotation": [0, -180, 0],
+      "translation": [0, 3.25, 0]
+    },
+    "fixed": {
+      "translation": [0, 4, 0]
+    }
+  },
+  "groups": [
+    {
+      "name": "base",
+      "origin": [8, 0, 8],
+      "color": 0,
+      "children": [
+        {
+          "name": "head",
+          "origin": [8, 0, 8],
+          "color": 0,
+          "children": [0]
+        },
+        {
+          "name": "face",
+          "origin": [8, 0, 8],
+          "color": 0,
+          "children": [1]
+        }
+      ]
+    }
+  ]
+}

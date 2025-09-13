@@ -1,6 +1,0 @@
-{
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "core_botics:block/deactivated_robot_charge2"
-  }
-}

@@ -1,100 +1,43 @@
 {
   "variants": {
-    "charge=0,connected=true,facing=north": {
-      "model": "core_botics:block/deactivated_robot_charge0"
-    },
-    "charge=0,connected=true,facing=south": {
-      "model": "core_botics:block/deactivated_robot_charge0"
-    },
-    "charge=0,connected=true,facing=west": {
-      "model": "core_botics:block/deactivated_robot_charge0"
-    },
-    "charge=0,connected=true,facing=east": {
-      "model": "core_botics:block/deactivated_robot_charge0"
-    },
-    "charge=0,connected=false,facing=north": {
-      "model": "core_botics:block/deactivated_robot_charge0"
-    },
-    "charge=0,connected=false,facing=south": {
-      "model": "core_botics:block/deactivated_robot_charge0"
-    },
-    "charge=0,connected=false,facing=west": {
-      "model": "core_botics:block/deactivated_robot_charge0"
-    },
-    "charge=0,connected=false,facing=east": {
-      "model": "core_botics:block/deactivated_robot_charge0"
-    },
-    "charge=1,connected=true,facing=north": {
-      "model": "core_botics:block/deactivated_robot_charge1"
-    },
-    "charge=1,connected=true,facing=south": {
-      "model": "core_botics:block/deactivated_robot_charge1"
-    },
-    "charge=1,connected=true,facing=west": {
-      "model": "core_botics:block/deactivated_robot_charge1"
-    },
-    "charge=1,connected=true,facing=east": {
-      "model": "core_botics:block/deactivated_robot_charge1"
-    },
-    "charge=1,connected=false,facing=north": {
-      "model": "core_botics:block/deactivated_robot_charge1"
-    },
-    "charge=1,connected=false,facing=south": {
-      "model": "core_botics:block/deactivated_robot_charge1"
-    },
-    "charge=1,connected=false,facing=west": {
-      "model": "core_botics:block/deactivated_robot_charge1"
-    },
-    "charge=1,connected=false,facing=east": {
-      "model": "core_botics:block/deactivated_robot_charge1"
-    },
-    "charge=2,connected=true,facing=north": {
-      "model": "core_botics:block/deactivated_robot_charge2"
-    },
-    "charge=2,connected=true,facing=south": {
-      "model": "core_botics:block/deactivated_robot_charge2"
-    },
-    "charge=2,connected=true,facing=west": {
-      "model": "core_botics:block/deactivated_robot_charge2"
-    },
-    "charge=2,connected=true,facing=east": {
-      "model": "core_botics:block/deactivated_robot_charge2"
-    },
-    "charge=2,connected=false,facing=north": {
-      "model": "core_botics:block/deactivated_robot_charge2"
-    },
-    "charge=2,connected=false,facing=south": {
-      "model": "core_botics:block/deactivated_robot_charge2"
-    },
-    "charge=2,connected=false,facing=west": {
-      "model": "core_botics:block/deactivated_robot_charge2"
-    },
-    "charge=2,connected=false,facing=east": {
-      "model": "core_botics:block/deactivated_robot_charge2"
-    },
-    "charge=3,connected=true,facing=north": {
-      "model": "core_botics:block/deactivated_robot_charge3"
-    },
-    "charge=3,connected=true,facing=south": {
-      "model": "core_botics:block/deactivated_robot_charge3"
-    },
-    "charge=3,connected=true,facing=west": {
-      "model": "core_botics:block/deactivated_robot_charge3"
-    },
-    "charge=3,connected=true,facing=east": {
-      "model": "core_botics:block/deactivated_robot_charge3"
-    },
-    "charge=3,connected=false,facing=north": {
-      "model": "core_botics:block/deactivated_robot_charge3"
-    },
-    "charge=3,connected=false,facing=south": {
-      "model": "core_botics:block/deactivated_robot_charge3"
-    },
-    "charge=3,connected=false,facing=west": {
-      "model": "core_botics:block/deactivated_robot_charge3"
-    },
-    "charge=3,connected=false,facing=east": {
-      "model": "core_botics:block/deactivated_robot_charge3"
-    }
+    "charged=0,connected=true,facing=north": { "model": "core_botics:block/deactivated_robot_charged0" },
+    "charged=0,connected=true,facing=east":  { "model": "core_botics:block/deactivated_robot_charged0", "y": 90 },
+    "charged=0,connected=true,facing=south": { "model": "core_botics:block/deactivated_robot_charged0", "y": 180 },
+    "charged=0,connected=true,facing=west":  { "model": "core_botics:block/deactivated_robot_charged0", "y": 270 },
+
+    "charged=0,connected=false,facing=north": { "model": "core_botics:block/deactivated_robot_charged0" },
+    "charged=0,connected=false,facing=east":  { "model": "core_botics:block/deactivated_robot_charged0", "y": 90 },
+    "charged=0,connected=false,facing=south": { "model": "core_botics:block/deactivated_robot_charged0", "y": 180 },
+    "charged=0,connected=false,facing=west":  { "model": "core_botics:block/deactivated_robot_charged0", "y": 270 },
+
+    "charged=1,connected=true,facing=north": { "model": "core_botics:block/deactivated_robot_charged1" },
+    "charged=1,connected=true,facing=east":  { "model": "core_botics:block/deactivated_robot_charged1", "y": 90 },
+    "charged=1,connected=true,facing=south": { "model": "core_botics:block/deactivated_robot_charged1", "y": 180 },
+    "charged=1,connected=true,facing=west":  { "model": "core_botics:block/deactivated_robot_charged1", "y": 270 },
+
+    "charged=1,connected=false,facing=north": { "model": "core_botics:block/deactivated_robot_charged1" },
+    "charged=1,connected=false,facing=east":  { "model": "core_botics:block/deactivated_robot_charged1", "y": 90 },
+    "charged=1,connected=false,facing=south": { "model": "core_botics:block/deactivated_robot_charged1", "y": 180 },
+    "charged=1,connected=false,facing=west":  { "model": "core_botics:block/deactivated_robot_charged1", "y": 270 },
+
+    "charged=2,connected=true,facing=north": { "model": "core_botics:block/deactivated_robot_charged2" },
+    "charged=2,connected=true,facing=east":  { "model": "core_botics:block/deactivated_robot_charged2", "y": 90 },
+    "charged=2,connected=true,facing=south": { "model": "core_botics:block/deactivated_robot_charged2", "y": 180 },
+    "charged=2,connected=true,facing=west":  { "model": "core_botics:block/deactivated_robot_charged2", "y": 270 },
+
+    "charged=2,connected=false,facing=north": { "model": "core_botics:block/deactivated_robot_charged2" },
+    "charged=2,connected=false,facing=east":  { "model": "core_botics:block/deactivated_robot_charged2", "y": 90 },
+    "charged=2,connected=false,facing=south": { "model": "core_botics:block/deactivated_robot_charged2", "y": 180 },
+    "charged=2,connected=false,facing=west":  { "model": "core_botics:block/deactivated_robot_charged2", "y": 270 },
+
+    "charged=3,connected=true,facing=north": { "model": "core_botics:block/deactivated_robot_charged3" },
+    "charged=3,connected=true,facing=east":  { "model": "core_botics:block/deactivated_robot_charged3", "y": 90 },
+    "charged=3,connected=true,facing=south": { "model": "core_botics:block/deactivated_robot_charged3", "y": 180 },
+    "charged=3,connected=true,facing=west":  { "model": "core_botics:block/deactivated_robot_charged3", "y": 270 },
+
+    "charged=3,connected=false,facing=north": { "model": "core_botics:block/deactivated_robot_charged3" },
+    "charged=3,connected=false,facing=east":  { "model": "core_botics:block/deactivated_robot_charged3", "y": 90 },
+    "charged=3,connected=false,facing=south": { "model": "core_botics:block/deactivated_robot_charged3", "y": 180 },
+    "charged=3,connected=false,facing=west":  { "model": "core_botics:block/deactivated_robot_charged3", "y": 270 }
   }
 }
