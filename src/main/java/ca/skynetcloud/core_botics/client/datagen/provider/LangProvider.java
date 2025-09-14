@@ -35,11 +35,15 @@ public class LangProvider extends FabricLanguageProvider {
         translationBuilder.add(BlockInit.BIORAY_COLLECTOR_BLOCK.asItem(), "Bioray Collector");
         translationBuilder.add(BlockInit.DEACTIVATED_ROBOT.asItem(), "Deactivated Robot");
 
+
+
         translationBuilder.add(ItemInit.SpeedCard, "Speed Card");
         translationBuilder.add(ItemInit.ConversionCard, "Conversion Card");
 
         translationBuilder.add("gui.core_botics.entropyscreen.label_stored_entropy", "Stored Bioray: %d/%d");
         translationBuilder.add("container.core_botics.entropy", "Bioray Collector");
+        translationBuilder.add("container.bioray_infusion_matrix", "Bioray Infusion Matrix");
+
 
         addText(translationBuilder, MODJAM_ITEM_GROUP.getDisplayName(), "Core Botics");
     }
