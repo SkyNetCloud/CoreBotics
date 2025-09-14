@@ -3,8 +3,8 @@
   "credit": "Made with Blockbench",
   "texture_size": [64, 64],
   "textures": {
-    "0": "core_botics:block/deactivated_robot_charged0",
-    "particle": "core_botics:block/deactivated_robot_charged0"
+    "0": "core_botics:block/deactivated_robot_charged3",
+    "particle": "core_botics:block/deactivated_robot_charged3"
   },
   "elements": [
     {
