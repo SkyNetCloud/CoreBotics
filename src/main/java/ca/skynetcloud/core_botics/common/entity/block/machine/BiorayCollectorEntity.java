@@ -1,9 +1,7 @@
-package ca.skynetcloud.core_botics.common.entity.block;
+package ca.skynetcloud.core_botics.common.entity.block.machine;
 
 import ca.skynetcloud.core_botics.common.init.BlockEntityInit;
 import ca.skynetcloud.core_botics.common.init.BlockInit;
-import ca.skynetcloud.core_botics.common.recipes.BiorayCollectorRecipe;
-import ca.skynetcloud.core_botics.common.recipes.BiorayCollectorRecipeManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -37,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static net.minecraft.block.Block.NOTIFY_ALL;
 import static net.minecraft.block.Blocks.SAND;
 import static net.minecraft.block.Blocks.WITHER_ROSE;
 
@@ -47,28 +46,35 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
     private boolean isOpen = false;
     private int tickCooldown = 0;
     private int convertCooldown = 0;
-    private static final int TICKS_PER_ENTROPY = 100;
+    private static final int TICKS_PER_BIORAY = 100;
     private static final int TRANSFORM_TICKS = 50;
     private static final int TRANSFORM_BLOCK_NEARBY = 500;
-    //boolean usedEntropy = false;
-    boolean IsCrafting = false;
     public boolean disableByUpgradeCard = false;
 
     public int speedCard = 0;
 
-    private final Map<UUID, Integer> itemProgress = new HashMap<>();
+    private final Map<UUID, Integer> entityConvertProgress = new HashMap<>();
     protected static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
-    protected static final RawAnimation CRAFTING = RawAnimation.begin().thenPlay("crafting");
 
 
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public BiorayCollectorEntity(BlockPos pos, BlockState state) {
-        super(BlockEntityInit.ENTROPY_COLLECTOR_ENTITY, pos, state);
+        super(BlockEntityInit.BIORAY_COLLECTOR_ENTITY, pos, state);
     }
 
+    public int tryDrainBioray(int amount) {
+        if (storedBioray <= 0) return 0;
 
+        int drained = Math.min(storedBioray, amount);
+        storedBioray -= drained;
+        markDirty();
+        if (world != null && !world.isClient) {
+            world.updateListeners(pos, getCachedState(), getCachedState(), NOTIFY_ALL);
+        }
+        return drained;
+    }
 
     private PlayState animationPredicate(AnimationTest<BiorayCollectorEntity> test) {
         test.controller().setAnimation(IDLE);
@@ -78,7 +84,7 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<BiorayCollectorEntity>("idleController", 0, this::animationPredicate).triggerableAnim("crafting", CRAFTING));
+        controllers.add(new AnimationController<BiorayCollectorEntity>("idleController", 0, this::animationPredicate));
     }
 
     @Override
@@ -138,7 +144,6 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
     protected void writeData(WriteView view) {
         super.writeData(view);
         view.putInt("bioray", storedBioray);
-        view.putBoolean("crafting", IsCrafting);
         view.putBoolean("disabledByCard", disableByUpgradeCard);
         view.putInt("speedCard", speedCard);
     }
@@ -147,7 +152,6 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
     public void readData(ReadView view) {
         super.readData(view);
         storedBioray = view.getInt("bioray", 0);
-        IsCrafting = view.getBoolean("crafting", true);
         disableByUpgradeCard = view.getBoolean("disabledByCard", false);
         speedCard = view.getInt("speedCard", 0);
     }
@@ -200,8 +204,8 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
 
                 int bonus = getSpeedAddon();
 
-                be.addBioray(base * bonus / 10);
-                tickCooldown = TICKS_PER_ENTROPY;
+                be.addBioray(base + bonus * 10);
+                tickCooldown = TICKS_PER_BIORAY;
             }
         }
 
@@ -211,18 +215,23 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
 
 
             if (entity instanceof ZombieEntity && be.getStoredBioray() >= 500) {
-                entity.remove(Entity.RemovalReason.KILLED);
+                UUID id = entity.getUuid();
+                int progress = entityConvertProgress.getOrDefault(id, 0) + 1;
+                entityConvertProgress.put(id, progress);
+                
+                if (progress >= TRANSFORM_TICKS) {
+                    entity.remove(Entity.RemovalReason.KILLED);
 
-                PigEntity pig = new PigEntity(EntityType.PIG, world);
-                pig.refreshPositionAndAngles(entity.getX(), entity.getY(), entity.getZ(),
-                        entity.getYaw(), entity.getPitch());
-                world.spawnEntity(pig);
+                    PigEntity pig = new PigEntity(EntityType.PIG, world);
+                    pig.refreshPositionAndAngles(entity.getX(), entity.getY(), entity.getZ(),
+                            entity.getYaw(), entity.getPitch());
+                    world.spawnEntity(pig);
 
-                world.addParticleClient(ParticleTypes.ELECTRIC_SPARK,
-                        entity.getX(), entity.getY() + 0.5, entity.getZ(),
-                        0, 0.05, 0);
-
-                be.removeBioray(500);
+                    world.addParticleClient(ParticleTypes.ELECTRIC_SPARK,
+                            entity.getX(), entity.getY() + 0.5, entity.getZ(),
+                            0, 0.05, 0);
+                    be.removeBioray(500);
+                }
             }
         }
 
@@ -240,29 +249,7 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
                 be.removeBioray(maxStoredBioray);
             }
 
-            for (BiorayCollectorRecipe recipe : BiorayCollectorRecipeManager.getRecipes()) {
-                if (recipe.matches(stack) && be.getStoredBioray() >= recipe.bioraycost()) {
-                    UUID id = itemEntity.getUuid();
-                    int progress = itemProgress.getOrDefault(id, 0) + 1;
-                    itemProgress.put(id, progress);
 
-                    double x = itemEntity.getX();
-                    double y = itemEntity.getY() + 0.25;
-                    double z = itemEntity.getZ();
-                    world.addParticleClient(ParticleTypes.ELECTRIC_SPARK, x, y, z, 0, 0.05, 0);
-
-                    if (progress >= TRANSFORM_TICKS) {
-                        stack.decrement(1);
-                        be.removeBioray(recipe.bioraycost());
-                        ItemEntity newItem = new ItemEntity(world, x, y, z, recipe.craft());
-                        world.spawnEntity(newItem);
-                        triggerAnim("idleController", "crafting");
-                        itemProgress.remove(id);
-                    }
-
-                    break;
-                }
-            }
         }
             if (!disableByUpgradeCard) {
                 if (be.getStoredBioray() == maxStoredBioray) {
@@ -294,5 +281,6 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
                 }
             }
     }
+
 
 }

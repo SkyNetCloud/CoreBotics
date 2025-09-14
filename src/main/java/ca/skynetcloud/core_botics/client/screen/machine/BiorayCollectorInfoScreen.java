@@ -1,5 +1,6 @@
-package ca.skynetcloud.core_botics.common.screen;
+package ca.skynetcloud.core_botics.client.screen.machine;
 
+import ca.skynetcloud.core_botics.client.screen.handler.BiorayCollectorScreenHandler;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;

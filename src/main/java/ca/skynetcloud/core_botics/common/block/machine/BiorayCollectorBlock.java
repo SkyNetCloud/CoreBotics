@@ -1,9 +1,10 @@
-package ca.skynetcloud.core_botics.common.block;
+package ca.skynetcloud.core_botics.common.block.machine;
 
-import ca.skynetcloud.core_botics.common.entity.block.BiorayCollectorEntity;
+import ca.skynetcloud.core_botics.client.screen.handler.BiorayCollectorScreenHandler;
+import ca.skynetcloud.core_botics.common.block.DeactivatedRobotBlock;
+import ca.skynetcloud.core_botics.common.entity.block.machine.BiorayCollectorEntity;
 import ca.skynetcloud.core_botics.common.init.BlockEntityInit;
 import ca.skynetcloud.core_botics.common.item.UpgradeCardItem;
-import ca.skynetcloud.core_botics.common.screen.BiorayCollectorScreenHandler;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -11,6 +12,7 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
@@ -18,23 +20,23 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 
-public class BiorayCollector extends BlockWithEntity {
-
+public class BiorayCollectorBlock extends BlockWithEntity {
 
     private static final VoxelShape BASE_SHAPE = BlockWithEntity.createCuboidShape(2,0,2,14,2,14);
-    //private static final VoxelShape CUBE_SHAPE = BlockWithEntity.createCuboidShape(4,8,4,12,16,12);
     private static final VoxelShape FULL_SHAPE = BASE_SHAPE;
-    public static final MapCodec<BiorayCollector> CODEC = createCodec(BiorayCollector::new);
+    public static final MapCodec<BiorayCollectorBlock> CODEC = createCodec(BiorayCollectorBlock::new);
     public static final Text TITLE = Text.translatable("container.core_botics.entropy");
 
 
-    public BiorayCollector(AbstractBlock.Settings settings) {
+    public BiorayCollectorBlock(AbstractBlock.Settings settings) {
         super(settings);
     }
 
@@ -80,7 +82,7 @@ public class BiorayCollector extends BlockWithEntity {
                             be.getPropertyDelegate(),
                             ScreenHandlerContext.create(world, pos)
                     ),
-                    BiorayCollector.TITLE
+                    BiorayCollectorBlock.TITLE
             );
         }
         return null;
@@ -109,7 +111,7 @@ public class BiorayCollector extends BlockWithEntity {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return type == BlockEntityInit.ENTROPY_COLLECTOR_ENTITY
+        return type == BlockEntityInit.BIORAY_COLLECTOR_ENTITY
                 ? (world1, pos, state1, be) -> {
             if (!world1.isClient && be instanceof BiorayCollectorEntity entropyCollector) {
                 entropyCollector.tick(world1, pos, state1, entropyCollector);
@@ -118,4 +120,29 @@ public class BiorayCollector extends BlockWithEntity {
         }
                 : null;
     }
+
+    @Override
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
+        double f = pos.getX() + 0.5;
+        double t = pos.getY() + 0.5;
+        double p = pos.getZ() + 0.5;
+        if (random.nextInt(6) == 0){
+            world.addParticleClient(ParticleTypes.WHITE_SMOKE, f,t,p, 0.0, 0.04, 0.0);
+        }
+        super.randomDisplayTick(state, world, pos, random);
+    }
+
+    @Override
+    protected void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+        super.onBlockAdded(state, world, pos, oldState, notify);
+
+        for (Direction dir : Direction.values()){
+            BlockPos neighborPos = pos.offset(dir);
+            BlockState neighborState = world.getBlockState(neighborPos);
+            if (neighborState.getBlock() instanceof DeactivatedRobotBlock){
+                world.updateNeighbor(neighborState, neighborPos, this, null, true);
+            }
+        }
+    }
+
 }
