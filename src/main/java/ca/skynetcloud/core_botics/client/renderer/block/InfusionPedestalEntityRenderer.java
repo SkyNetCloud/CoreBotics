@@ -46,26 +46,18 @@ public class InfusionPedestalEntityRenderer extends GeoBlockRenderer<PedestalBlo
         BlockEntity be = pedestal.getWorld().getBlockEntity(pedestal.getPos());
         if (!(be instanceof PedestalBlockEntity freshPedestal)) return;
 
-        SimpleInventory inv = freshPedestal.getInventory();
-        ItemStack stack = ItemStack.EMPTY;
-        for (ItemStack s : inv.getHeldStacks()) {
-            if (!s.isEmpty()) {
-                stack = s;
-                break;
-            }
-        }
 
-        if (stack.isEmpty()) return;
+        if (pedestal.getSimpleInventory().isEmpty()) return;
 
         poseStack.push();
         poseStack.translate(0.5D, 0.5D, 0.5D);
-        float scale = stack.getItem() instanceof BlockItem ? 0.95F : 0.75F;
+        float scale = pedestal.getSimpleInventory().getStack(0).getItem() instanceof BlockItem ? 0.95F : 0.75F;
         poseStack.scale(scale, scale, scale);
         double tick = System.currentTimeMillis() / 800.0D;
         poseStack.translate(0.0D, Math.sin(tick % (2 * Math.PI)) * 0.065D, 0.0D);
 
-        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, GROUND,
-                packedLight, packedOverlay, poseStack, bufferSource, pedestal.getWorld(), 0);
+        MinecraftClient.getInstance().getItemRenderer().renderItem(pedestal.getSimpleInventory().getStack(0).getItem().getDefaultStack(), GROUND,
+                packedLight, packedOverlay, poseStack, bufferSource, pedestal.getWorld(), 1);
 
         poseStack.pop();
     }
