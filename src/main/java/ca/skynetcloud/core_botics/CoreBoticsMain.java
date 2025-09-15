@@ -1,10 +1,6 @@
 package ca.skynetcloud.core_botics;
 
-import ca.skynetcloud.core_botics.common.init.BlockEntityInit;
-import ca.skynetcloud.core_botics.common.init.BlockInit;
-import ca.skynetcloud.core_botics.common.init.ItemGroupInit;
-import ca.skynetcloud.core_botics.common.init.ItemInit;
-import ca.skynetcloud.core_botics.common.recipes.BiorayCollectorRecipeManager;
+import ca.skynetcloud.core_botics.common.init.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.registry.Registries;
@@ -26,18 +22,24 @@ public class CoreBoticsMain implements ModInitializer {
         BlockInit.initialize();
         BlockEntityInit.initialize();
         ItemInit.initialize();
+        EntityInit.initialize();
+        AttributeInit.initialize();
+        RecipeInit.initialize();
 
 
-        BiorayCollectorRecipeManager.loadRecipesFromResources();
         Registry.register(Registries.ITEM_GROUP, MOD_JAM_ITEM_GROUP_KEY, ItemGroupInit.MODJAM_ITEM_GROUP);
 
         ItemGroupEvents.modifyEntriesEvent(MOD_JAM_ITEM_GROUP_KEY).register(fabricItemGroupEntries -> {
+
             fabricItemGroupEntries.add(BlockInit.BIORAY_COLLECTOR_BLOCK.asItem());
+            fabricItemGroupEntries.add(BlockInit.INFUSION_PEDESTAL_ITEM.asItem());
+            fabricItemGroupEntries.add(BlockInit.INFUSION_MATRIX_BLOCK.asItem());
             fabricItemGroupEntries.add(BlockInit.DEACTIVATED_ROBOT.asItem());
             fabricItemGroupEntries.add(ItemInit.ConversionCard);
             fabricItemGroupEntries.add(ItemInit.SpeedCard);
         });
     }
+
 
     public static Identifier id(String path) {
         return Identifier.of(MODID, path);

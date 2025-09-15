@@ -1,23 +1,30 @@
 package ca.skynetcloud.core_botics.common.recipes;
 
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.input.RecipeInput;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
-public record BiorayInfusionRecipeInput(Inventory guiInv, World world, BlockPos pos) implements RecipeInput {
+import java.util.List;
+
+public record BiorayInfusionRecipeInput(ItemStack matrixStack, List<ItemStack> pedestalStacks) implements RecipeInput {
 
     @Override
     public ItemStack getStackInSlot(int slot) {
-        return guiInv.getStack(slot);
+        if (slot == 0) {
+            return matrixStack;
+        }
+        return ItemStack.EMPTY;
+    }
+
+    public ItemStack getMatrixStack() {
+        return matrixStack;
+    }
+
+    public List<ItemStack> getPedestalStacks() {
+        return pedestalStacks;
     }
 
     @Override
     public int size() {
-        return guiInv.size();
+        return 1 + pedestalStacks.size();
     }
-
-
-
 }

@@ -1,17 +1,21 @@
 package ca.skynetcloud.core_botics.client.datagen.provider;
 
 
-import ca.skynetcloud.core_botics.common.recipes.BiorayCollectorRecipeManager;
+
+import ca.skynetcloud.core_botics.common.init.ItemInit;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.data.recipe.RecipeExporter;
 import net.minecraft.data.recipe.RecipeGenerator;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryWrapper;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static ca.skynetcloud.core_botics.CoreBoticsMain.MODID;
+import static ca.skynetcloud.core_botics.client.datagen.helper.BiorayRecipeHelper.offerBiorayRecipe;
 
 @SuppressWarnings("unused")
 public class RecipeProvider extends FabricRecipeProvider {
@@ -22,14 +26,20 @@ public class RecipeProvider extends FabricRecipeProvider {
 
     @Override
     protected RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup registryLookup, RecipeExporter exporter) {
-        BiorayCollectorRecipeManager.add(Items.IRON_INGOT, Items.DIAMOND, 10, "diamond_from_iron");
-        BiorayCollectorRecipeManager.add(Items.COPPER_INGOT, Items.GOLD_INGOT, 15, "gold_from_copper");
-        BiorayCollectorRecipeManager.exportAllRecipes(output);
-        return null;
+        return new RecipeGenerator(registryLookup,exporter) {
+            @Override
+            public void generate() {
+                List<Item> pedestals = List.of(Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND);
+                offerBiorayRecipe(exporter, "speed_card_upgrade", Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, pedestals, ItemInit.SpeedCard, 12);
+            }
+        };
     }
+
+
+
 
     @Override
     public String getName() {
-        return MODID + "Entropy Recipes";
+        return MODID + " Recipe";
     }
 }

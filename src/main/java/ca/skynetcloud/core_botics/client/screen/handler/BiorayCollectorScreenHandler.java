@@ -14,11 +14,12 @@ import net.minecraft.screen.slot.Slot;
 
 public class BiorayCollectorScreenHandler extends ScreenHandler {
 
+
     private final PropertyDelegate propertyDelegate;
     private final ScreenHandlerContext context;
 
     public BiorayCollectorScreenHandler(int syncId, PlayerInventory playerInventory, PropertyDelegate propertyDelegate, ScreenHandlerContext context) {
-        super(ScreenHandlerInit.ENTROPY_SCREEN_HANDLER, syncId);
+        super(ScreenHandlerInit.BIORAY_COLLECTOR_SCREEN_HANDLER, syncId);
         this.propertyDelegate = propertyDelegate;
         this.context = context;
         addProperties(propertyDelegate);

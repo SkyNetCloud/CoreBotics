@@ -1,7 +1,9 @@
 package ca.skynetcloud.core_botics.common.init;
 
-import ca.skynetcloud.core_botics.common.block.BiorayCollector;
 import ca.skynetcloud.core_botics.common.block.DeactivatedRobotBlock;
+import ca.skynetcloud.core_botics.common.block.PedestalBlock;
+import ca.skynetcloud.core_botics.common.block.machine.BiorayCollectorBlock;
+import ca.skynetcloud.core_botics.common.block.machine.BiorayInfusionMatrixBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
@@ -16,36 +18,22 @@ import net.minecraft.util.Identifier;
 import java.util.function.Function;
 
 import static ca.skynetcloud.core_botics.CoreBoticsMain.MODID;
+import static ca.skynetcloud.core_botics.CoreBoticsMain.id;
 
 public class BlockInit {
 
 
     public static void initialize() {}
 
-    public static final Block BIORAY_COLLECTOR_BLOCK = register("bioray_collector", BiorayCollector::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().noBlockBreakParticles(), true);
-    public static final Block DEACTIVATED_ROBOT = register("deactivated_robot", DeactivatedRobotBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.DRIED_GHAST).nonOpaque(), true);
+    public static final Block BIORAY_COLLECTOR_BLOCK = Registry.register(Registries.BLOCK, id("bioray_collector"), new BiorayCollectorBlock(AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().registryKey(RegistryKey.of(RegistryKeys.BLOCK, id("bioray_collector")))));
+    public static final Block DEACTIVATED_ROBOT = Registry.register(Registries.BLOCK, id("deactivated_robot"), new DeactivatedRobotBlock(AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().registryKey(RegistryKey.of(RegistryKeys.BLOCK, id("deactivated_robot")))));
+    public static final Block INFUSION_PEDESTAL_BLOCK = Registry.register(Registries.BLOCK, id("infusion_pedestal"), new PedestalBlock(AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().registryKey(RegistryKey.of(RegistryKeys.BLOCK, id("infusion_pedestal")))));
+    public static final Block INFUSION_MATRIX_BLOCK = Registry.register(Registries.BLOCK, id("infusion_matrix"), new BiorayInfusionMatrixBlock(AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().registryKey(RegistryKey.of(RegistryKeys.BLOCK, id("infusion_matrix")))));
 
-    private static Block register(String name, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings settings, boolean shouldRegisterItem) {
+    public static final BlockItem BIORAY_COLLECTOR_BLOCK_ITEM = Registry.register(Registries.ITEM, id("bioray_collector"), new BlockItem(BIORAY_COLLECTOR_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("bioray_collector")))));
+    public static final BlockItem DEACTIVATED_ROBOT_ITEM = Registry.register(Registries.ITEM, id("deactivated_robot"), new BlockItem(DEACTIVATED_ROBOT, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("deactivated_robot")))));
+    public static final BlockItem INFUSION_PEDESTAL_ITEM = Registry.register(Registries.ITEM, id("infusion_pedestal"), new BlockItem(INFUSION_PEDESTAL_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("infusion_pedestal")))));
+    public static final BlockItem INFUSION_MATRIX_ITEM = Registry.register(Registries.ITEM, id("infusion_matrix"), new BlockItem(INFUSION_MATRIX_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("infusion_matrix")))));
 
-        RegistryKey<Block> blockKey = keyOfBlock(name);
-        Block block = blockFactory.apply(settings.registryKey(blockKey));
-
-        if (shouldRegisterItem) {
-            RegistryKey<Item> itemKey = keyOfItem(name);
-            BlockItem blockItem = new BlockItem(block, new Item.Settings().registryKey(itemKey));
-            Registry.register(Registries.ITEM, itemKey, blockItem);
-        }
-
-        return Registry.register(Registries.BLOCK, blockKey, block);
-    }
-
-    private static RegistryKey<Block> keyOfBlock(String name) {
-        return RegistryKey.of(RegistryKeys.BLOCK, Identifier.of(MODID, name));
-    }
-
-
-    private static RegistryKey<Item> keyOfItem(String name) {
-        return RegistryKey.of(RegistryKeys.ITEM, Identifier.of(MODID, name));
-    }
 
 }

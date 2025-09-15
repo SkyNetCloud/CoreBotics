@@ -27,26 +27,6 @@
 					}
 				}
 			}
-		},
-		"crafting": {
-			"loop": false,
-			"animation_length": 3.0833,
-			"bones": {
-				"head": {
-					"scale": {
-						"0.0": {
-							"vector": [1, 1, 1]
-						},
-						"1.125": {
-							"vector": [1, 0.7, 1],
-							"easing": "easeOutQuint"
-						},
-						"3.0833": {
-							"vector": [1, 1, 1]
-						}
-					}
-				}
-			}
 		}
 	}
 }

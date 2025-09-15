@@ -42,7 +42,8 @@ public class LangProvider extends FabricLanguageProvider {
 
         translationBuilder.add("gui.core_botics.entropyscreen.label_stored_entropy", "Stored Bioray: %d/%d");
         translationBuilder.add("container.core_botics.entropy", "Bioray Collector");
-        translationBuilder.add("container.bioray_infusion_matrix", "Bioray Infusion Matrix");
+        translationBuilder.add("container.infusion_matrix", "Bioray Infusion Matrix");
+        translationBuilder.add("message.no_collector_block_below", "Block will not be active. Place a collector below it to activate");
 
 
         addText(translationBuilder, MODJAM_ITEM_GROUP.getDisplayName(), "Core Botics");

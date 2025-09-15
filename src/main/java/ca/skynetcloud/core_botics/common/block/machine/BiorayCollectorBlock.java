@@ -30,8 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class BiorayCollectorBlock extends BlockWithEntity {
 
-    private static final VoxelShape BASE_SHAPE = BlockWithEntity.createCuboidShape(2,0,2,14,2,14);
-    private static final VoxelShape FULL_SHAPE = BASE_SHAPE;
+
     public static final MapCodec<BiorayCollectorBlock> CODEC = createCodec(BiorayCollectorBlock::new);
     public static final Text TITLE = Text.translatable("container.core_botics.entropy");
 
@@ -51,7 +50,6 @@ public class BiorayCollectorBlock extends BlockWithEntity {
     }
 
 
-
     @Override
     protected BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.INVISIBLE;
@@ -60,16 +58,6 @@ public class BiorayCollectorBlock extends BlockWithEntity {
     @Override
     protected float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos) {
         return super.getAmbientOcclusionLightLevel(state, world, pos);
-    }
-
-    @Override
-    protected VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return FULL_SHAPE;
-    }
-
-    @Override
-    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return FULL_SHAPE;
     }
 
     @Override
@@ -124,10 +112,10 @@ public class BiorayCollectorBlock extends BlockWithEntity {
     @Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         double f = pos.getX() + 0.5;
-        double t = pos.getY() + 0.5;
+        double t = pos.getY() + 0.9;
         double p = pos.getZ() + 0.5;
         if (random.nextInt(6) == 0){
-            world.addParticleClient(ParticleTypes.WHITE_SMOKE, f,t,p, 0.0, 0.04, 0.0);
+            world.addParticleClient(ParticleTypes.ELECTRIC_SPARK, f,t,p, 0.0, 0.09, 0.0);
         }
         super.randomDisplayTick(state, world, pos, random);
     }

@@ -1,0 +1,33 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.idle": {
+			"loop": true,
+			"animation_length": 14,
+			"bones": {
+				"group2": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 180, 0]
+						},
+						"13.7917": {
+							"vector": [0, -32.5, 0],
+							"easing": "easeOutSine"
+						}
+					}
+				},
+				"group": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, -32.5, 0]
+						},
+						"13.875": {
+							"vector": [0, 180, 0],
+							"easing": "easeOutSine"
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,6 +1,6 @@
 package ca.skynetcloud.core_botics.common.item;
 
-import ca.skynetcloud.core_botics.common.entity.block.BiorayCollectorEntity;
+import ca.skynetcloud.core_botics.common.entity.block.machine.BiorayCollectorEntity;
 import ca.skynetcloud.core_botics.common.init.ItemInit;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;

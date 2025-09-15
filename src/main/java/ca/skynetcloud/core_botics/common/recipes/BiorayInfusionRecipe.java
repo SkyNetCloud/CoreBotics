@@ -3,26 +3,64 @@ package ca.skynetcloud.core_botics.common.recipes;
 import ca.skynetcloud.core_botics.common.init.RecipeInit;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.*;
+import net.minecraft.recipe.book.RecipeBookCategories;
 import net.minecraft.recipe.book.RecipeBookCategory;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
-public record BiorayInfusionRecipe(Ingredient ingredient, ItemStack output, int bioray) implements Recipe<BiorayInfusionRecipeInput> {
+import java.util.List;
+
+public record BiorayInfusionRecipe(Ingredient matrix, List<Ingredient> pedestals, ItemStack output, int bioray) implements Recipe<BiorayInfusionRecipeInput> {
 
 
-    @Override
-    public Ingredient ingredient() {
-        return ingredient;
+    public DefaultedList<Ingredient> getIngredients() {
+        DefaultedList<Ingredient> list = DefaultedList.of();
+        list.add(matrix);
+        list.addAll(pedestals);
+        return list;
+    }
+
+
+    public boolean requires(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+
+        for (Ingredient pedestalIngredient : pedestals) {
+            if (pedestalIngredient.test(stack)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
     public boolean matches(BiorayInfusionRecipeInput input, World world) {
-        if (world.isClient){
-            return false;
+        if (world.isClient) return false;
+
+        if (!matrix.test(input.getMatrixStack())) return false;
+
+        List<ItemStack> pedestalStacks = input.getPedestalStacks();
+        if (pedestalStacks.size() < pedestals.size()) return false;
+
+        boolean[] matched = new boolean[pedestalStacks.size()];
+
+        for (Ingredient pedestalIngredient : pedestals) {
+            boolean found = false;
+            for (int i = 0; i < pedestalStacks.size(); i++) {
+                if (!matched[i] && pedestalIngredient.test(pedestalStacks.get(i))) {
+                    matched[i] = true;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) return false;
         }
 
-        return ingredient.test(input.getStackInSlot(0));
+        return true;
     }
+
+
 
     @Override
     public ItemStack craft(BiorayInfusionRecipeInput input, RegistryWrapper.WrapperLookup registries) {
@@ -46,12 +84,12 @@ public record BiorayInfusionRecipe(Ingredient ingredient, ItemStack output, int 
 
     @Override
     public IngredientPlacement getIngredientPlacement() {
-        return null;
+        return IngredientPlacement.NONE;
     }
 
     @Override
     public RecipeBookCategory getRecipeBookCategory() {
-        return null;
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
 

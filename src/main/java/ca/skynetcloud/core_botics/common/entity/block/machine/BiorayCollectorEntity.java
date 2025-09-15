@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static net.minecraft.block.Block.NOTIFY_ALL;
+import static net.minecraft.block.Block.NOTIFY_LISTENERS;
 import static net.minecraft.block.Blocks.SAND;
 import static net.minecraft.block.Blocks.WITHER_ROSE;
 
@@ -65,14 +66,9 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
     }
 
     public int tryDrainBioray(int amount) {
-        if (storedBioray <= 0) return 0;
-
-        int drained = Math.min(storedBioray, amount);
+        int drained = Math.min(amount, storedBioray);
         storedBioray -= drained;
         markDirty();
-        if (world != null && !world.isClient) {
-            world.updateListeners(pos, getCachedState(), getCachedState(), NOTIFY_ALL);
-        }
         return drained;
     }
 
@@ -168,7 +164,8 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
 
         @Override
         public void set(int index, int value) {
-            if (index == 0) storedBioray = value;
+            if (index == 0)
+                storedBioray = value;
         }
 
         @Override
@@ -195,18 +192,13 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
         stopTriggeredAnim("idleController", "crafting");
 
 
-
-        if (world.isSkyVisible(pos.up()) && world.isDay()) {
-            if (tickCooldown > 0) {
+        if (tickCooldown > 0) {
                 tickCooldown--;
-            }else {
-                int base = 25;
-
-                int bonus = getSpeedAddon();
-
-                be.addBioray(base + bonus * 10);
-                tickCooldown = TICKS_PER_BIORAY;
-            }
+        }else {
+            int base = 25;
+            int bonus = getSpeedAddon();
+            be.addBioray(base + bonus * 10);
+            tickCooldown = TICKS_PER_BIORAY;
         }
 
         List<Entity> nearbyEntities = getNearbyEntities(world, pos, 3.0);

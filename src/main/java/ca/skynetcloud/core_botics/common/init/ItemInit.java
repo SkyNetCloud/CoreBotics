@@ -12,23 +12,24 @@ import net.minecraft.util.Identifier;
 import java.util.function.Function;
 
 import static ca.skynetcloud.core_botics.CoreBoticsMain.MODID;
+import static ca.skynetcloud.core_botics.CoreBoticsMain.id;
 
 
 public class ItemInit {
 
-    public static Item ConversionCard;
-    public static Item SpeedCard;
+    public static void initialize() {}
 
-    public static void initialize() {
-        ConversionCard = register("conversion_card", UpgradeCardItem::new, new Item.Settings());
-        SpeedCard = register("speed_card", UpgradeCardItem::new, new Item.Settings());
-    }
+    public static final UpgradeCardItem ConversionCard = Registry.register(
+            Registries.ITEM,
+            id("conversion_card"),
+            new UpgradeCardItem(new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("conversion_card"))))
+    );
+    public static Item SpeedCard = Registry.register(
+            Registries.ITEM,
+            id("speed_card"),
+            new UpgradeCardItem(new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("speed_card"))))
+    );
 
 
-    public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {
-        RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(MODID, name));
-        Item item = itemFactory.apply(settings.registryKey(itemKey));
-        Registry.register(Registries.ITEM, itemKey, item);
-        return item;
-    }
+
 }
