@@ -71,13 +71,6 @@ public class BiorayInfusionMatrixBlock extends BlockWithEntity {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return type == BlockEntityInit.INFUSION_MATRIX_ENTITY
-                ? (world1, pos, state1, be) -> {
-            if (!world1.isClient && be instanceof BiorayInfusionMatrixEntity biorayInfusionMatrixEntity) {
-                biorayInfusionMatrixEntity.tick(world1, pos, state1, biorayInfusionMatrixEntity);
-
-            }
-        }
-                : null;
+        return (world1, pos, state1, blockEntity) -> ((BiorayInfusionMatrixEntity) blockEntity).tick(world1, pos, state1, (BiorayInfusionMatrixEntity) blockEntity);
     }
 }

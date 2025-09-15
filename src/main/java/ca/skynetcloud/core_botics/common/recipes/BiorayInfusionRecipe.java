@@ -9,6 +9,8 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public record BiorayInfusionRecipe(Ingredient matrix, List<Ingredient> pedestals, ItemStack output, int bioray) implements Recipe<BiorayInfusionRecipeInput> {
@@ -36,25 +38,32 @@ public record BiorayInfusionRecipe(Ingredient matrix, List<Ingredient> pedestals
 
     @Override
     public boolean matches(BiorayInfusionRecipeInput input, World world) {
-        if (world.isClient) return false;
+        if (world.isClient()) return false;
 
-        if (!matrix.test(input.getMatrixStack())) return false;
+        if (!matrix.test(input.getStackInSlot(0))) {
+            return false;
+        }
 
-        List<ItemStack> pedestalStacks = input.getPedestalStacks();
-        if (pedestalStacks.size() < pedestals.size()) return false;
 
-        boolean[] matched = new boolean[pedestalStacks.size()];
+        if (input.getPedestalStacks().size() < pedestals.size()) {
+            return false;
+        }
 
+
+        List<ItemStack> pedestalStacks = new ArrayList<>(input.getPedestalStacks());
         for (Ingredient pedestalIngredient : pedestals) {
-            boolean found = false;
-            for (int i = 0; i < pedestalStacks.size(); i++) {
-                if (!matched[i] && pedestalIngredient.test(pedestalStacks.get(i))) {
-                    matched[i] = true;
-                    found = true;
+            boolean matched = false;
+
+            for (Iterator<ItemStack> it = pedestalStacks.iterator(); it.hasNext(); ) {
+                ItemStack pedestalStack = it.next();
+                if (pedestalIngredient.test(pedestalStack)) {
+                    it.remove();
+                    matched = true;
                     break;
                 }
             }
-            if (!found) return false;
+
+            if (!matched) return false; // one required pedestal not found
         }
 
         return true;

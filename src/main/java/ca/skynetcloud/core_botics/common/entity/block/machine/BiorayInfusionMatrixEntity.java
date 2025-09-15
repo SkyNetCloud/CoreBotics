@@ -1,5 +1,6 @@
 package ca.skynetcloud.core_botics.common.entity.block.machine;
 
+import ca.skynetcloud.core_botics.CoreBoticsMain;
 import ca.skynetcloud.core_botics.client.screen.handler.BiorayInfusionMatrixScreenHandler;
 import ca.skynetcloud.core_botics.common.entity.PedestalBlockEntity;
 import ca.skynetcloud.core_botics.common.init.BlockEntityInit;
@@ -7,6 +8,7 @@ import ca.skynetcloud.core_botics.common.init.RecipeInit;
 import ca.skynetcloud.core_botics.common.recipes.BiorayInfusionRecipe;
 import ca.skynetcloud.core_botics.common.recipes.BiorayInfusionRecipeInput;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -14,12 +16,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -38,10 +43,12 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static net.minecraft.block.Block.NOTIFY_ALL;
+import static net.minecraft.block.Block.NOTIFY_LISTENERS;
 
 public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory, ExtendedScreenHandlerFactory<BlockPos>, GeoBlockEntity, BlockEntityTicker<BiorayInfusionMatrixEntity> {
 
@@ -51,7 +58,7 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
     private final int maxStoredBioray = 10000;
     private int progress = 0;
     private final int maxProgress = 95;
-    protected final net.minecraft.screen.PropertyDelegate propertyDelegate;
+    protected final PropertyDelegate propertyDelegate;
 
     protected static final RawAnimation DEPLOY_WITH_OUT_BIORAY = RawAnimation.begin().thenPlayAndHold("not_active");
     protected static final RawAnimation DEPLOY_WITH_BIORAY = RawAnimation.begin().thenPlayAndHold("active");
@@ -87,6 +94,7 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
         };
     }
 
+
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>("controller", 0, event -> {
@@ -112,82 +120,97 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
         return null;
     }
 
-    private List<PedestalBlockEntity> getPedestals() {
-        List<PedestalBlockEntity> pedestals = new ArrayList<>();
-        if (world == null) return pedestals;
-
-        int radius = 4;
-        for (int x = -radius; x <= radius; x++) {
-            for (int y = -radius; y <= radius; y++) {
-                for (int z = -radius; z <= radius; z++) {
-                    if (x == 0 && y == 0 && z == 0) continue;
-                    BlockPos checkPos = pos.add(x, y, z);
-                    BlockEntity be = world.getBlockEntity(checkPos);
-                    if (be instanceof PedestalBlockEntity pedestal) pedestals.add(pedestal);
-                }
-            }
-        }
-        return pedestals;
-    }
-
     private List<ItemStack> getPedestalStacks() {
         List<ItemStack> stacks = new ArrayList<>();
-        for (PedestalBlockEntity pedestal : getPedestals()) {
-            ItemStack stack = pedestal.getInventory().getStack(0);
-            if (!stack.isEmpty()) stacks.add(stack.copy());
+        for (BlockPos pedestalPos : getPedestalOffsets()) {
+            BlockEntity be = world.getBlockEntity(pedestalPos);
+            if (be instanceof PedestalBlockEntity pedestal) {
+                ItemStack stack = pedestal.getSimpleInventory().getStack(0);
+                if (!stack.isEmpty()) stacks.add(stack.copy());
+            }
         }
         return stacks;
     }
 
     @Override
     public void tick(World world, BlockPos pos, BlockState state, BiorayInfusionMatrixEntity be) {
-        if (!(world instanceof ServerWorld serverWorld)) return;
 
+        if (!(world instanceof ServerWorld serverWorld)) return;
         BiorayCollectorEntity collector = getCollectorBelow();
         if (collector == null) return;
 
+
         int canReceive = maxStoredBioray - storedBioray;
-        if (canReceive > 0) {
-            storedBioray += collector.tryDrainBioray(canReceive);
-            syncToClient();
-        }
+        if (canReceive > 0) storedBioray += collector.tryDrainBioray(canReceive);
 
-        Optional<RecipeEntry<BiorayInfusionRecipe>> recipeOpt = serverWorld.getRecipeManager()
-                .getFirstMatch(RecipeInit.BIORAY_INFUSION_RECIPE_TYPE,
-                        new BiorayInfusionRecipeInput(inventory.get(0), getPedestalStacks()), world);
+        Optional<RecipeEntry<BiorayInfusionRecipe>> recipeOpt = ((ServerWorld)world).getRecipeManager().getFirstMatch(RecipeInit.BIORAY_INFUSION_RECIPE_TYPE, new BiorayInfusionRecipeInput(inventory.get(0),getPedestalStacks()), world);
 
-        if (recipeOpt.isEmpty() || storedBioray <= 0) {
-            progress = 0;
-            return;
-        }
+
+
+        if (recipeOpt.isEmpty()) { progress = 0; return; }
+        if (storedBioray <= 0) return;
 
         progress++;
         storedBioray--;
-        triggerAnim("controller", "crafting");
 
         BiorayInfusionRecipe recipe = recipeOpt.get().value();
         if (progress >= maxProgress) {
+            consumePedestalItems(recipe);
             ItemStack input = inventory.get(0);
             if (!input.isEmpty()) input.decrement(1);
-
-            for (PedestalBlockEntity pedestal : getPedestals()) {
-                pedestal.consumeItemIfCrafting();
-            }
-            stopTriggeredAnim("controller", "crafting");
             ItemStack output = recipe.output();
-            if (inventory.get(0).isEmpty()) inventory.set(0, output.copy());
+            ItemStack slot = inventory.get(0);
+            if (slot.isEmpty()) inventory.set(0, output.copy());
+            else if (slot.isOf(output.getItem())) slot.increment(output.getCount());
             progress = 0;
         }
-
         markDirty();
-        syncToClient();
     }
 
-    private void syncToClient() {
-        if (world != null && !world.isClient) {
-            world.updateListeners(pos, world.getBlockState(pos), world.getBlockState(pos), NOTIFY_ALL);
+    private List<BlockPos> getPedestalOffsets() {
+        List<BlockPos> offsets = new ArrayList<>();
+        int minY = pos.getY() - 2;
+        int maxY = pos.getY() + 1;
+        int maxDistance = 5;
+
+        for (int y = minY; y <= maxY; y++) {
+            for (int x = pos.getX() - maxDistance; x <= pos.getX() + maxDistance; x++) {
+                for (int z = pos.getZ() - maxDistance; z <= pos.getZ() + maxDistance; z++) {
+                    BlockPos checkPos = new BlockPos(x, y, z);
+                    BlockEntity be = world.getBlockEntity(checkPos);
+                    if (be instanceof PedestalBlockEntity) {
+                        offsets.add(checkPos);
+                    }
+                }
+            }
+        }
+
+        return offsets;
+    }
+
+
+    private void consumePedestalItems(BiorayInfusionRecipe recipe) {
+        for (BlockPos pedestalPos : getPedestalOffsets()) {
+            BlockEntity be = world.getBlockEntity(pedestalPos);
+            if (be instanceof PedestalBlockEntity pedestal) {
+                ItemStack stack = pedestal.getSimpleInventory().getStack(0);
+                if (!stack.isEmpty()) {
+                    pedestal.getSimpleInventory().clear();
+                    pedestal.markDirty();
+
+                    if (!world.isClient()) {
+                        world.updateListeners(pedestalPos, world.getBlockState(pedestalPos), world.getBlockState(pedestalPos), Block.NOTIFY_ALL);
+                        ((ServerWorld) world).getChunkManager().markForUpdate(pos);
+                    }
+
+                    CoreBoticsMain.LOGGER.info("Cleared pedestal at " + pedestalPos + ", markDirty called.");
+                } else {
+                    CoreBoticsMain.LOGGER.info("Pedestal at " + pedestalPos + " was already empty.");
+                }
+            }
         }
     }
+
 
     @Override
     protected void writeData(WriteView view) {
