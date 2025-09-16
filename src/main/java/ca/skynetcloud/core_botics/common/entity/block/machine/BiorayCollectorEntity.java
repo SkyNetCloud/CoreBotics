@@ -1,9 +1,11 @@
 package ca.skynetcloud.core_botics.common.entity.block.machine;
 
+import ca.skynetcloud.core_botics.CoreBoticsMain;
 import ca.skynetcloud.core_botics.common.init.BlockEntityInit;
 import ca.skynetcloud.core_botics.common.init.BlockInit;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BeamEmitter;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.entity.Entity;
@@ -16,10 +18,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.PropertyDelegate;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -30,15 +34,11 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static net.minecraft.block.Block.NOTIFY_ALL;
 import static net.minecraft.block.Block.NOTIFY_LISTENERS;
-import static net.minecraft.block.Blocks.SAND;
-import static net.minecraft.block.Blocks.WITHER_ROSE;
+import static net.minecraft.block.Blocks.*;
 
 public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity, BlockEntityTicker<BiorayCollectorEntity> {
 
@@ -46,13 +46,18 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
     private final int maxStoredBioray = 10000;
     private boolean isOpen = false;
     private int tickCooldown = 0;
-    private int convertCooldown = 0;
     private static final int TICKS_PER_BIORAY = 100;
     private static final int TRANSFORM_TICKS = 50;
-    private static final int TRANSFORM_BLOCK_NEARBY = 500;
+    private static final int TRANSFORM_BLOCK_NEARBY = 1000;
     public boolean disableByUpgradeCard = false;
-
+    private int currentDepth = 1;
+    private final Queue<BlockPos> spreadQueue = new LinkedList<>();
+    private int spreadCount = 0;
+    private int convertCooldown = 0;
     public int speedCard = 0;
+    private List<BeamEmitter.BeamSegment> beamSegments = new ArrayList<>();
+    private int beamMinY = -1;
+
 
     private final Map<UUID, Integer> entityConvertProgress = new HashMap<>();
     protected static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
@@ -210,7 +215,7 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
                 UUID id = entity.getUuid();
                 int progress = entityConvertProgress.getOrDefault(id, 0) + 1;
                 entityConvertProgress.put(id, progress);
-                
+
                 if (progress >= TRANSFORM_TICKS) {
                     entity.remove(Entity.RemovalReason.KILLED);
 
@@ -227,8 +232,6 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
             }
         }
 
-
-
         List<ItemEntity> nearbyItems = getNearbyItems(world, pos, 1.0);
         for (ItemEntity itemEntity : nearbyItems) {
             ItemStack stack = itemEntity.getStack();
@@ -243,35 +246,76 @@ public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity
 
 
         }
-            if (!disableByUpgradeCard) {
-                if (be.getStoredBioray() == maxStoredBioray) {
-                    if (convertCooldown == 0) {
-                        for (int i = 0; i < 10; i++) {
+        if (!disableByUpgradeCard) {
+            if (be.getStoredBioray() == maxStoredBioray) {
 
+                if (convertCooldown > 0) {
+                    CoreBoticsMain.LOGGER.info("Convert cooldown remaining: {} ticks", convertCooldown);
+                    convertCooldown--;
+                }
 
-                            BlockPos below = pos.down();
-                            BlockState blockState = world.getBlockState(below);
+                if (convertCooldown == 0) {
 
-                            if (blockState.isAir()) continue;
-                            if (blockState.isOf(Blocks.BEDROCK) || blockState.isOf(WITHER_ROSE) || blockState.isOf(BlockInit.BIORAY_COLLECTOR_BLOCK))
-                                continue;
+                    if (currentDepth <= 1) {
+                        BlockPos below = pos.down(currentDepth);
+                        CoreBoticsMain.LOGGER.info("Next vertical block to convert: {}", below);
+                        BlockState blockState = world.getBlockState(below);
 
+                        if (!blockState.isAir()
+                                && !blockState.isOf(Blocks.BEDROCK)
+                                && !blockState.isOf(WITHER_ROSE)
+                                && !blockState.isOf(BlockInit.BIORAY_COLLECTOR_BLOCK)) {
 
-                            world.setBlockState(below, SAND.getDefaultState());
-                            be.removeBioray(25);
-                            usedEntropy = true;
-
+                            world.setBlockState(below, SCULK.getDefaultState());
+                            be.removeBioray(150);
                             double x = below.getX() + 0.5;
-                            double y = below.getY() + 1;
+                            double y = below.getY() + 0.5;
                             double z = below.getZ() + 0.5;
-                            world.addParticleClient(ParticleTypes.ELECTRIC_SPARK, x, y, z, 0, 0.1, 0);
+                            ((ServerWorld) world).spawnParticles(ParticleTypes.ELECTRIC_SPARK, x, y, z, 4, 0, 0, 0, 0.05);
+                            CoreBoticsMain.LOGGER.info("Converted vertical block below at {}", below);
 
-                            convertCooldown = TRANSFORM_BLOCK_NEARBY;
-                            break;
+                            // Only spread horizontally (X/Z)
+                            spreadQueue.add(below.north());
+                            spreadQueue.add(below.south());
+                            spreadQueue.add(below.east());
+                            spreadQueue.add(below.west());
+
+                            currentDepth++;
+                        } else {
+                            CoreBoticsMain.LOGGER.debug("Cannot convert vertical block at {}", below);
+                        }
+                    } else if (!spreadQueue.isEmpty() && spreadCount < 250) {
+                        BlockPos target = spreadQueue.peek();
+                        CoreBoticsMain.LOGGER.info("Next spread block to convert: {}", target);
+                        target = spreadQueue.poll();
+                        BlockState blockState = world.getBlockState(target);
+
+                        if (!blockState.isAir()
+                                && !blockState.isOf(Blocks.BEDROCK)
+                                && !blockState.isOf(WITHER_ROSE)
+                                && !blockState.isOf(BlockInit.BIORAY_COLLECTOR_BLOCK)) {
+
+                            world.setBlockState(target, SCULK.getDefaultState());
+                            be.removeBioray(150);
+                            spreadCount++;
+
+                            double x = target.getX() + 0.5;
+                            double y = target.getY() + 0.5;
+                            double z = target.getZ() + 0.5;
+                            ((ServerWorld) world).spawnParticles(ParticleTypes.ELECTRIC_SPARK, x, y, z, 4, 0, 0, 0, 0.05);
+
+
+                            spreadQueue.add(target.north());
+                            spreadQueue.add(target.south());
+                            spreadQueue.add(target.east());
+                            spreadQueue.add(target.west());
                         }
                     }
+
+                    convertCooldown = TRANSFORM_BLOCK_NEARBY;
                 }
             }
+        }
     }
 
 

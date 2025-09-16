@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.data.recipe.RecipeExporter;
 import net.minecraft.data.recipe.RecipeGenerator;
-import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryWrapper;
 
@@ -29,8 +28,8 @@ public class RecipeProvider extends FabricRecipeProvider {
         return new RecipeGenerator(registryLookup,exporter) {
             @Override
             public void generate() {
-                List<Item> pedestals = List.of(Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND);
-                offerBiorayRecipe(exporter, "speed_card_upgrade", Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, pedestals, ItemInit.SpeedCard, 12);
+                offerBiorayRecipe(exporter, "speed_card_upgrade", Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, List.of(Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND), ItemInit.SpeedCard, 12);
+                offerBiorayRecipe(exporter, "conversion_card_upgrade", Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, List.of(Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND), ItemInit.ConversionCard, 12);
             }
         };
     }

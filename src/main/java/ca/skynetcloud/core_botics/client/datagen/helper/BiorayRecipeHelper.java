@@ -15,18 +15,7 @@ import static ca.skynetcloud.core_botics.CoreBoticsMain.id;
 
 public class BiorayRecipeHelper {
 
-
-    /**
-     * Make a Bioray Infusion recipe with the same pedestal item repeated 12 times.
-     */
-    public static void offerBiorayRecipe(
-            RecipeExporter exporter,
-            String recipeName,
-            Item matrix,
-            Item pedestalItem,
-            Item output,
-            int bioray
-    ) {
+    public static void offerBiorayRecipe(RecipeExporter exporter, String recipeName, Item matrix, Item pedestalItem, Item output, int bioray) {
         List<Item> pedestals = new ArrayList<>();
         for (int i = 0; i < 12; i++) {
             pedestals.add(pedestalItem);
@@ -35,17 +24,7 @@ public class BiorayRecipeHelper {
         offerBiorayRecipe(exporter, recipeName, matrix, pedestals, output, bioray);
     }
 
-    /**
-     * Generates a Bioray Infusion recipe with custom pedestal items.
-     */
-    public static void offerBiorayRecipe(
-            RecipeExporter exporter,
-            String recipeName,
-            Item matrix,
-            List<Item> pedestals,
-            Item output,
-            int bioray
-    ) {
+    public static void offerBiorayRecipe(RecipeExporter exporter, String recipeName, Item matrix, List<Item> pedestals, Item output, int bioray) {
         Ingredient matrixIngredient = Ingredient.ofItems(matrix);
 
         List<Ingredient> pedestalIngredients = new ArrayList<>();
@@ -53,17 +32,8 @@ public class BiorayRecipeHelper {
             pedestalIngredients.add(Ingredient.ofItems(item));
         }
 
-        BiorayInfusionRecipe recipe = new BiorayInfusionRecipe(
-                matrixIngredient,
-                pedestalIngredients,
-                new ItemStack(output),
-                bioray
-        );
+        BiorayInfusionRecipe recipe = new BiorayInfusionRecipe(matrixIngredient, pedestalIngredients, new ItemStack(output), bioray);
 
-        exporter.accept(
-                RegistryKey.of(RegistryKeys.RECIPE, id(recipeName)),
-                recipe,
-                null
-        );
+        exporter.accept(RegistryKey.of(RegistryKeys.RECIPE, id(recipeName)), recipe, null);
     }
 }

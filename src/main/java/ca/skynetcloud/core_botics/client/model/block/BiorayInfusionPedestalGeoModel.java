@@ -1,7 +1,7 @@
 package ca.skynetcloud.core_botics.client.model.block;
 
+
 import ca.skynetcloud.core_botics.common.entity.PedestalBlockEntity;
-import ca.skynetcloud.core_botics.common.entity.block.machine.BiorayInfusionMatrixEntity;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.base.GeoRenderState;

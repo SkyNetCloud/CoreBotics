@@ -4,7 +4,6 @@ import ca.skynetcloud.core_botics.client.renderer.block.BiorayCollectorBlockEnti
 import ca.skynetcloud.core_botics.client.renderer.block.BiorayInfsuinMatrixBlockEntityRenderer;
 import ca.skynetcloud.core_botics.client.renderer.block.InfusionPedestalEntityRenderer;
 import ca.skynetcloud.core_botics.client.renderer.entity.HelperRobotRenderer;
-import ca.skynetcloud.core_botics.client.screen.handler.BiorayCollectorScreenHandler;
 import ca.skynetcloud.core_botics.client.screen.machine.BiorayCollectorInfoScreen;
 import ca.skynetcloud.core_botics.client.screen.machine.BiorayInfusionMatrixScreen;
 import ca.skynetcloud.core_botics.common.init.BlockEntityInit;

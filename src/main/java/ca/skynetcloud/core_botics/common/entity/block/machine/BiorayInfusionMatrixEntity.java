@@ -1,6 +1,5 @@
 package ca.skynetcloud.core_botics.common.entity.block.machine;
 
-import ca.skynetcloud.core_botics.CoreBoticsMain;
 import ca.skynetcloud.core_botics.client.screen.handler.BiorayInfusionMatrixScreenHandler;
 import ca.skynetcloud.core_botics.common.entity.PedestalBlockEntity;
 import ca.skynetcloud.core_botics.common.init.BlockEntityInit;
@@ -8,7 +7,6 @@ import ca.skynetcloud.core_botics.common.init.RecipeInit;
 import ca.skynetcloud.core_botics.common.recipes.BiorayInfusionRecipe;
 import ca.skynetcloud.core_botics.common.recipes.BiorayInfusionRecipeInput;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -16,14 +14,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -43,12 +38,8 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import static net.minecraft.block.Block.NOTIFY_ALL;
-import static net.minecraft.block.Block.NOTIFY_LISTENERS;
 
 public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory, ExtendedScreenHandlerFactory<BlockPos>, GeoBlockEntity, BlockEntityTicker<BiorayInfusionMatrixEntity> {
 
@@ -64,6 +55,9 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
     protected static final RawAnimation DEPLOY_WITH_BIORAY = RawAnimation.begin().thenPlayAndHold("active");
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+
+
 
     public BiorayInfusionMatrixEntity(BlockPos pos, BlockState state) {
         super(BlockEntityInit.INFUSION_MATRIX_ENTITY, pos, state);
@@ -94,6 +88,9 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
         };
     }
 
+    public boolean isFull() {
+        return storedBioray >= maxStoredBioray;
+    }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
@@ -125,7 +122,7 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
         for (BlockPos pedestalPos : getPedestalOffsets()) {
             BlockEntity be = world.getBlockEntity(pedestalPos);
             if (be instanceof PedestalBlockEntity pedestal) {
-                ItemStack stack = pedestal.getSimpleInventory().getStack(0);
+                ItemStack stack = pedestal.getStack();
                 if (!stack.isEmpty()) stacks.add(stack.copy());
             }
         }
@@ -139,13 +136,16 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
         BiorayCollectorEntity collector = getCollectorBelow();
         if (collector == null) return;
 
+        if (storedBioray < maxStoredBioray) {
+            int canReceive = maxStoredBioray - storedBioray;
+            int drained = collector.tryDrainBioray(canReceive);
+            storedBioray += drained;
 
-        int canReceive = maxStoredBioray - storedBioray;
-        if (canReceive > 0) storedBioray += collector.tryDrainBioray(canReceive);
+            if (storedBioray > maxStoredBioray) storedBioray = maxStoredBioray;
+            markDirty();
+        }
 
         Optional<RecipeEntry<BiorayInfusionRecipe>> recipeOpt = ((ServerWorld)world).getRecipeManager().getFirstMatch(RecipeInit.BIORAY_INFUSION_RECIPE_TYPE, new BiorayInfusionRecipeInput(inventory.get(0),getPedestalStacks()), world);
-
-
 
         if (recipeOpt.isEmpty()) { progress = 0; return; }
         if (storedBioray <= 0) return;
@@ -154,21 +154,35 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
         storedBioray--;
 
         BiorayInfusionRecipe recipe = recipeOpt.get().value();
+
         if (progress >= maxProgress) {
-            consumePedestalItems(recipe);
+            for (BlockPos pedestalPos : getPedestalOffsets()) {
+                BlockEntity be2 = world.getBlockEntity(pedestalPos);
+                if (be2 instanceof PedestalBlockEntity pedestal && pedestal.hasItem()) {
+                    pedestal.spawnItemParticles(pedestal.getStack());
+                }
+            }
             ItemStack input = inventory.get(0);
             if (!input.isEmpty()) input.decrement(1);
+            consumePedestalItems(recipe);
+
             ItemStack output = recipe.output();
             ItemStack slot = inventory.get(0);
-            if (slot.isEmpty()) inventory.set(0, output.copy());
-            else if (slot.isOf(output.getItem())) slot.increment(output.getCount());
+            if (slot.isEmpty()) {
+                inventory.set(0, output.copy());
+            } else if (slot.isOf(output.getItem())) {
+                slot.increment(output.getCount());
+            }
             progress = 0;
+            markDirty();
         }
+
         markDirty();
     }
 
     private List<BlockPos> getPedestalOffsets() {
         List<BlockPos> offsets = new ArrayList<>();
+        BlockPos pos = this.getPos();
         int minY = pos.getY() - 2;
         int maxY = pos.getY() + 1;
         int maxDistance = 5;
@@ -180,6 +194,7 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
                     BlockEntity be = world.getBlockEntity(checkPos);
                     if (be instanceof PedestalBlockEntity) {
                         offsets.add(checkPos);
+
                     }
                 }
             }
@@ -191,25 +206,19 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
 
     private void consumePedestalItems(BiorayInfusionRecipe recipe) {
         for (BlockPos pedestalPos : getPedestalOffsets()) {
-            BlockEntity be = world.getBlockEntity(pedestalPos);
-            if (be instanceof PedestalBlockEntity pedestal) {
-                ItemStack stack = pedestal.getSimpleInventory().getStack(0);
-                if (!stack.isEmpty()) {
-                    pedestal.getSimpleInventory().clear();
+            BlockEntity bePedestal = world.getBlockEntity(pedestalPos);
+            if (bePedestal instanceof PedestalBlockEntity pedestal && pedestal.hasItem()) {
+                pedestal.triggerCraftParticles();
+
+                pedestal.removeStack(1);
+                if (!pedestal.hasItem()) {
                     pedestal.markDirty();
-
-                    if (!world.isClient()) {
-                        world.updateListeners(pedestalPos, world.getBlockState(pedestalPos), world.getBlockState(pedestalPos), Block.NOTIFY_ALL);
-                        ((ServerWorld) world).getChunkManager().markForUpdate(pos);
-                    }
-
-                    CoreBoticsMain.LOGGER.info("Cleared pedestal at " + pedestalPos + ", markDirty called.");
-                } else {
-                    CoreBoticsMain.LOGGER.info("Pedestal at " + pedestalPos + " was already empty.");
+                    world.updateListeners(pedestal.getPos(), world.getBlockState(pedestal.getPos()), world.getBlockState(pedestal.getPos()), 3);
                 }
             }
         }
     }
+
 
 
     @Override
@@ -222,8 +231,8 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
     @Override
     protected void readData(ReadView view) {
         Inventories.readData(view, inventory);
-        view.getInt("infusion_matrix.progress", progress);
-        view.getInt("infusion_matrix.bioray", storedBioray);
+        progress = view.getInt("infusion_matrix.progress", 0);
+        storedBioray = view.getInt("infusion_matrix.bioray", 0);
     }
 
     @Nullable
@@ -287,5 +296,16 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
         inventory.clear();
     }
 
+
+
+    public boolean isCrafting() {
+        return storedBioray > 0 && progress > 0 && !inventory.get(0).isEmpty();
+    }
+
+
+
+    public BlockPos getMatrixCenter() {
+        return pos;
+    }
 
 }
