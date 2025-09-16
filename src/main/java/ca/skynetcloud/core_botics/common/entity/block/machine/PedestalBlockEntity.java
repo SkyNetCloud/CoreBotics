@@ -1,4 +1,4 @@
-package ca.skynetcloud.core_botics.common.entity;
+package ca.skynetcloud.core_botics.common.entity.block.machine;
 
 import ca.skynetcloud.core_botics.common.init.BlockEntityInit;
 import net.minecraft.block.BlockState;

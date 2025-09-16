@@ -30,10 +30,9 @@ public class BlockInit {
     public static final Block INFUSION_PEDESTAL_BLOCK = Registry.register(Registries.BLOCK, id("infusion_pedestal"), new PedestalBlock(AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().registryKey(RegistryKey.of(RegistryKeys.BLOCK, id("infusion_pedestal")))));
     public static final Block INFUSION_MATRIX_BLOCK = Registry.register(Registries.BLOCK, id("infusion_matrix"), new BiorayInfusionMatrixBlock(AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().registryKey(RegistryKey.of(RegistryKeys.BLOCK, id("infusion_matrix")))));
 
-    public static final BlockItem BIORAY_COLLECTOR_BLOCK_ITEM = Registry.register(Registries.ITEM, id("bioray_collector"), new BlockItem(BIORAY_COLLECTOR_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("bioray_collector")))));
+    public static final BlockItem BIORAY_COLLECTOR_ITEM = Registry.register(Registries.ITEM, id("bioray_collector"), new BlockItem(BIORAY_COLLECTOR_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("bioray_collector")))));
     public static final BlockItem DEACTIVATED_ROBOT_ITEM = Registry.register(Registries.ITEM, id("deactivated_robot"), new BlockItem(DEACTIVATED_ROBOT, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("deactivated_robot")))));
     public static final BlockItem INFUSION_PEDESTAL_ITEM = Registry.register(Registries.ITEM, id("infusion_pedestal"), new BlockItem(INFUSION_PEDESTAL_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("infusion_pedestal")))));
     public static final BlockItem INFUSION_MATRIX_ITEM = Registry.register(Registries.ITEM, id("infusion_matrix"), new BlockItem(INFUSION_MATRIX_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("infusion_matrix")))));
-
 
 }

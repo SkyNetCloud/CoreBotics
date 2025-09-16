@@ -20,8 +20,6 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class HelperBotEntity extends TameableEntity implements GeoEntity {
 
-    ;
-
     private boolean deployed = false;
     protected static final RawAnimation DEPLOY = RawAnimation.begin().thenPlay("deploy");
 

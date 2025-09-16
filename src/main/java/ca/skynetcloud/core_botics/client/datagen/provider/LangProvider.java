@@ -31,9 +31,10 @@ public class LangProvider extends FabricLanguageProvider {
 
     @Override
     public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
-        translationBuilder.add(BlockInit.BIORAY_COLLECTOR_BLOCK, "Bioray Collector");
-        translationBuilder.add(BlockInit.BIORAY_COLLECTOR_BLOCK.asItem(), "Bioray Collector");
-        translationBuilder.add(BlockInit.DEACTIVATED_ROBOT.asItem(), "Deactivated Robot");
+        translationBuilder.add(BlockInit.BIORAY_COLLECTOR_ITEM, "Bioray Collector");
+        translationBuilder.add(BlockInit.INFUSION_PEDESTAL_ITEM, "Infusion Pedestal");
+        translationBuilder.add(BlockInit.INFUSION_MATRIX_ITEM, "Infusion Matrix");
+        translationBuilder.add(BlockInit.DEACTIVATED_ROBOT_ITEM, "Deactivated Robot");
 
 
 

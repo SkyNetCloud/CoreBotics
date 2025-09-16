@@ -1,7 +1,6 @@
 package ca.skynetcloud.core_botics.common.entity.block.machine;
 
 import ca.skynetcloud.core_botics.client.screen.handler.BiorayInfusionMatrixScreenHandler;
-import ca.skynetcloud.core_botics.common.entity.PedestalBlockEntity;
 import ca.skynetcloud.core_botics.common.init.BlockEntityInit;
 import ca.skynetcloud.core_botics.common.init.RecipeInit;
 import ca.skynetcloud.core_botics.common.recipes.BiorayInfusionRecipe;
