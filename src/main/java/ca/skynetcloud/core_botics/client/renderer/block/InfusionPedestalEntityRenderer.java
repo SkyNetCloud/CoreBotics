@@ -35,11 +35,12 @@ public class InfusionPedestalEntityRenderer extends GeoBlockRenderer<PedestalBlo
 
     public InfusionPedestalEntityRenderer(BlockEntityRendererFactory.Context ignoredContext) {
         super(new BiorayInfusionPedestalGeoModel());
+
+        this.addRenderLayer(new AutoGlowingGeoLayer<>(this));
     }
 
     @Override
-    public void render(PedestalBlockEntity pedestal, float partialTick, MatrixStack poseStack,
-                       VertexConsumerProvider bufferSource, int packedLight, int packedOverlay, Vec3d cameraPosition) {
+    public void render(PedestalBlockEntity pedestal, float partialTick, MatrixStack poseStack, VertexConsumerProvider bufferSource, int packedLight, int packedOverlay, Vec3d cameraPosition) {
 
         super.render(pedestal, partialTick, poseStack, bufferSource, packedLight, packedOverlay, cameraPosition);
 
@@ -47,17 +48,14 @@ public class InfusionPedestalEntityRenderer extends GeoBlockRenderer<PedestalBlo
         if (!(be instanceof PedestalBlockEntity freshPedestal)) return;
 
 
-        if (pedestal.getSimpleInventory().isEmpty()) return;
+        if (pedestal.getStack().isEmpty()) return;
 
         poseStack.push();
-        poseStack.translate(0.5D, 0.5D, 0.5D);
-        float scale = pedestal.getSimpleInventory().getStack(0).getItem() instanceof BlockItem ? 0.95F : 0.75F;
-        poseStack.scale(scale, scale, scale);
-        double tick = System.currentTimeMillis() / 800.0D;
-        poseStack.translate(0.0D, Math.sin(tick % (2 * Math.PI)) * 0.065D, 0.0D);
+        poseStack.translate(0.5f, 0.29f, 0.5f);
+        poseStack.scale(0.5f, 0.5f, 0.5f);
+        poseStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(pedestal.getRenderingRotation()));
 
-        MinecraftClient.getInstance().getItemRenderer().renderItem(pedestal.getSimpleInventory().getStack(0).getItem().getDefaultStack(), GROUND,
-                packedLight, packedOverlay, poseStack, bufferSource, pedestal.getWorld(), 1);
+        MinecraftClient.getInstance().getItemRenderer().renderItem(pedestal.getStack(), GROUND, packedLight, packedOverlay, poseStack, bufferSource, pedestal.getWorld(), 0);
 
         poseStack.pop();
     }

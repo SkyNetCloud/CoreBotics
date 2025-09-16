@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "core_botics:block/infusion_matrix"
+  }
+}

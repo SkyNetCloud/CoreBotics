@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "core_botics:block/infusion_pedestal" }
+  }
+}
