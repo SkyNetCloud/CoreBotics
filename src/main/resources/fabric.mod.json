@@ -19,6 +19,9 @@
       "ca.skynetcloud.core_botics.CoreBoticsMain"
     ]
   },
+  "mixins": [
+    "core_botics.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",

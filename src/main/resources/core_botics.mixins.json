@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "ca.skynetcloud.core_botics.common.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MixinAbstractFurnaceBlockEntity"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
