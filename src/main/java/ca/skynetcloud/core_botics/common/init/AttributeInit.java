@@ -6,6 +6,6 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 public class AttributeInit {
 
     public static void initialize() {
-        FabricDefaultAttributeRegistry.register(EntityInit.HELPER_BOT_ENTITY, HelperBotEntity.createHelperRobotAttributes());
+        FabricDefaultAttributeRegistry.register(EntityInit.HELPER_BOT_ENTITY, HelperBotEntity.createAttributes());
     }
 }

@@ -15,6 +15,8 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import static ca.skynetcloud.core_botics.CoreBoticsMain.MODID;
