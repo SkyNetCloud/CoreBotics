@@ -42,7 +42,7 @@ public class BiorayCollectorScreenHandler extends ScreenHandler {
     }
 
     public BiorayCollectorScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, new ArrayPropertyDelegate(2), ScreenHandlerContext.EMPTY);
+        this(syncId, playerInventory, new ArrayPropertyDelegate(4), ScreenHandlerContext.EMPTY);
     }
 
     public int getStoredBioray() {

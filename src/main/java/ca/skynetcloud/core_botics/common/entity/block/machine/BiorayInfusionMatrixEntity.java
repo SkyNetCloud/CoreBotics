@@ -33,6 +33,8 @@ import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animatable.processing.AnimationController;
+import software.bernie.geckolib.animatable.processing.AnimationTest;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -47,11 +49,12 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
     private int storedBioray = 0;
     private final int maxStoredBioray = 10000;
     private int progress = 0;
-    private final int maxProgress = 95;
+    private final int maxProgress = 300;
     protected final PropertyDelegate propertyDelegate;
 
     protected static final RawAnimation DEPLOY_WITH_OUT_BIORAY = RawAnimation.begin().thenPlayAndHold("not_active");
     protected static final RawAnimation DEPLOY_WITH_BIORAY = RawAnimation.begin().thenPlayAndHold("active");
+    protected static final RawAnimation CRAFTING = RawAnimation.begin().thenLoop("crafting");
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -93,11 +96,19 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>("controller", 0, event -> {
-            if (getCollectorBelow() != null) return event.setAndContinue(DEPLOY_WITH_BIORAY);
-            return event.setAndContinue(DEPLOY_WITH_OUT_BIORAY);
-        }).triggerableAnim("crafting", RawAnimation.begin().thenLoop("crafting")));
+        controllers.add(new AnimationController<>("crafting", 2, this::idleController).triggerableAnim("crafting", CRAFTING));
+
     }
+
+    public PlayState idleController(AnimationTest<BiorayInfusionMatrixEntity> state){
+        if (getCollectorBelow() != null) {
+            return state.setAndContinue(DEPLOY_WITH_BIORAY);
+        } else {
+            state.setAndContinue(DEPLOY_WITH_OUT_BIORAY);
+        }
+        return PlayState.STOP;
+    }
+
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
@@ -154,6 +165,10 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
 
         BiorayInfusionRecipe recipe = recipeOpt.get().value();
 
+        if (progress > 0 && progress < maxProgress) {
+            triggerAnim("crafting", "crafting");
+        }
+
         if (progress >= maxProgress) {
             for (BlockPos pedestalPos : getPedestalOffsets()) {
                 BlockEntity be2 = world.getBlockEntity(pedestalPos);
@@ -161,10 +176,11 @@ public class BiorayInfusionMatrixEntity extends BlockEntity implements Inventory
                     pedestal.spawnItemParticles(pedestal.getStack());
                 }
             }
+
+            stopTriggeredAnim("crafting", "crafting");
             ItemStack input = inventory.get(0);
             if (!input.isEmpty()) input.decrement(1);
             consumePedestalItems(recipe);
-
             ItemStack output = recipe.output();
             ItemStack slot = inventory.get(0);
             if (slot.isEmpty()) {

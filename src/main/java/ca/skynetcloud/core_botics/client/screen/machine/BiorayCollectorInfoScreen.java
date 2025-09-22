@@ -37,7 +37,7 @@ public class BiorayCollectorInfoScreen extends HandledScreen<BiorayCollectorScre
         int storedEntropy = handler.getStoredBioray();
         int maxEntropy = handler.getMaxEntropy();
 
-        context.drawText(this.textRenderer, Text.translatable("gui.core_botics.label_stored_entropy", storedEntropy, maxEntropy), this.x + 11, this.y + 36, -12829636, false);
+        context.drawText(this.textRenderer, Text.translatable("gui.core_botics.label.stored_bioray", storedEntropy, maxEntropy), this.x + 11, this.y + 36, -12829636, false);
     }
 
     @Override

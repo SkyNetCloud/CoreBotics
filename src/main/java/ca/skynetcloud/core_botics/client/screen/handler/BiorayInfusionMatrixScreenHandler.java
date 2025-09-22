@@ -59,6 +59,16 @@ public class BiorayInfusionMatrixScreenHandler extends ScreenHandler {
         return propertyDelegate.get(3);
     }
 
+
+    public int getScaledProgress() {
+        int progress = this.propertyDelegate.get(0);
+        int maxProgress = this.propertyDelegate.get(1);
+        int arrowPixelSize = 36;
+
+        return maxProgress != 0 && progress != 0 ? progress * arrowPixelSize / maxProgress : 0;
+    }
+
+
     @Override
     public ItemStack quickMove(PlayerEntity player, int invSlot) {
         ItemStack newStack = ItemStack.EMPTY;

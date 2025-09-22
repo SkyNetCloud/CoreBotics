@@ -15,6 +15,8 @@ import static ca.skynetcloud.core_botics.CoreBoticsMain.MODID;
 public class BiorayInfusionMatrixScreen extends HandledScreen<BiorayInfusionMatrixScreenHandler> {
 
     private static final Identifier TEXTURE = Identifier.of(MODID,"textures/screen/infusion_matrix_screen.png");
+    private static final Identifier PROGRESS_BAR = Identifier.of(MODID,"textures/screen/progress_bar.png");
+
 
     public BiorayInfusionMatrixScreen(BiorayInfusionMatrixScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -36,10 +38,10 @@ public class BiorayInfusionMatrixScreen extends HandledScreen<BiorayInfusionMatr
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
         super.renderBackground(context, mouseX, mouseY, deltaTicks);
 
-        int storedEntropy = handler.getStoredBioray();
-        int maxEntropy = handler.getMaxEntropy();
+        int storedStoredBioray = handler.getStoredBioray();
+        int maxStoredBioray = handler.getMaxEntropy();
 
-        context.drawText(this.textRenderer, Text.translatable("gui.core_botics.label_stored_entropy", storedEntropy, maxEntropy), this.x + 9, this.y + 55, -12829636, false);
+        context.drawText(this.textRenderer, Text.translatable("gui.core_botics.label.stored_bioray", storedStoredBioray, maxStoredBioray), this.x + 9, this.y + 55, -12829636, false);
 
         String craftingStatus = handler.isCrafting() ? "Crafting..." : "Idle";
         int textX = this.x + 9;
@@ -51,6 +53,8 @@ public class BiorayInfusionMatrixScreen extends HandledScreen<BiorayInfusionMatr
         int storedBioray = handler.getStoredBioray();
         int maxBioray = handler.getMaxEntropy();
 
+
+
     }
 
     @Override
@@ -60,6 +64,17 @@ public class BiorayInfusionMatrixScreen extends HandledScreen<BiorayInfusionMatr
         this.backgroundHeight = 190;
 
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, this.x, this.y, 0, 0, 175, 166,   this.backgroundWidth, this.backgroundHeight);
-
+        renderProgressBar(context, x, y);
     }
+
+    private void renderProgressBar(DrawContext context, int x, int y) {
+       // if(handler.isCrafting()) {
+            int progress = handler.getScaledProgress();
+            int totalWidth = 16;
+
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, PROGRESS_BAR, this.x + 66, this.y + 16, 0, 0, progress, 36, 36, 36);
+        //}
+    }
+
+
 }
