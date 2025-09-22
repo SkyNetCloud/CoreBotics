@@ -47,7 +47,7 @@ public class LangProvider extends FabricLanguageProvider {
         translationBuilder.add(ItemInit.SPEED_CARD_REMOVER, "Speed Remover Card");
         translationBuilder.add(ItemInit.TICK_CARD_REMOVER, "Tick Remover Card");
 
-        translationBuilder.add("gui.core_botics.label.stored_entropy", "Stored Bioray: %d/%d");
+        translationBuilder.add("gui.core_botics.label.stored_bioray", "Stored Bioray: %d/%d");
         translationBuilder.add("container.core_botics.entropy", "Bioray Collector");
         translationBuilder.add("container.infusion_matrix", "Bioray Infusion Matrix");
         translationBuilder.add("message.no_collector_block_below", "Block will not be active. Place a collector below it to activate");

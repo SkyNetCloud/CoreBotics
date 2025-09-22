@@ -41,28 +41,20 @@ public class DeactivatedRobotBlock extends HorizontalFacingBlock {
     public static final IntProperty CHARGED = IntProperty.of("charged", 0, MAX_CHARGED);
     public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 
-    private static final VoxelShape SHAPE_NORTH = VoxelShapes.union(
-            VoxelShapes.cuboid(0.1875, 0, 0.25, 0.8125, 0.5625, 0.75),
-            VoxelShapes.cuboid(0.25, 0.0625, 0.228125, 0.75, 0.5, 0.5625)
-    );
+    private static final VoxelShape SHAPE_NORTH = VoxelShapes.union(VoxelShapes.cuboid(0.1875, 0, 0.25, 0.8125, 0.5625, 0.75), VoxelShapes.cuboid(0.25, 0.0625, 0.228125, 0.75, 0.5, 0.5625));
     private static final VoxelShape SHAPE_EAST = rotateShape(Direction.NORTH, Direction.EAST, SHAPE_NORTH);
     private static final VoxelShape SHAPE_SOUTH = rotateShape(Direction.NORTH, Direction.SOUTH, SHAPE_NORTH);
     private static final VoxelShape SHAPE_WEST = rotateShape(Direction.NORTH, Direction.WEST, SHAPE_NORTH);
 
     public DeactivatedRobotBlock(Settings settings) {
         super(settings);
-        setDefaultState(getDefaultState()
-                .with(FACING, Direction.NORTH)
-                .with(CHARGED, 0)
-                .with(CONNECTED, false));
+        setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(CHARGED, 0).with(CONNECTED, false));
     }
 
     @Override
     public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
         boolean connected = isConnected(ctx.getWorld(), ctx.getBlockPos());
-        return getDefaultState()
-                .with(FACING, ctx.getHorizontalPlayerFacing().getOpposite())
-                .with(CONNECTED, connected);
+        return getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite()).with(CONNECTED, connected);
     }
 
     @Override
@@ -99,10 +91,7 @@ public class DeactivatedRobotBlock extends HorizontalFacingBlock {
         int times = (to.getHorizontalQuarterTurns() - from.getHorizontalQuarterTurns() + 4) % 4;
         for (int i = 0; i < times; i++) {
             buf[0].forEachBox((minX, minY, minZ, maxX, maxY, maxZ) -> {
-                buf[1] = VoxelShapes.union(buf[1], VoxelShapes.cuboid(
-                        1 - maxZ, minY, minX,
-                        1 - minZ, maxY, maxX
-                ));
+                buf[1] = VoxelShapes.union(buf[1], VoxelShapes.cuboid(1 - maxZ, minY, minX, 1 - minZ, maxY, maxX));
             });
             buf[0] = buf[1];
             buf[1] = VoxelShapes.empty();
@@ -140,9 +129,7 @@ public class DeactivatedRobotBlock extends HorizontalFacingBlock {
     }
 
     @Override
-    protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView,
-                                                   BlockPos pos, Direction direction, BlockPos neighborPos,
-                                                   BlockState neighborState, Random random) {
+    protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
         boolean connected = isConnected(world, pos);
         BlockState newState = state.with(CONNECTED, connected);
 
@@ -157,7 +144,7 @@ public class DeactivatedRobotBlock extends HorizontalFacingBlock {
         HelperBotEntity bot = new HelperBotEntity(world);
         Vec3d center = pos.toCenterPos();
         float yaw = Direction.getHorizontalDegreesOrThrow(state.get(FACING));
-        bot.setDeployed(true);
+        //bot.setDeployed(true);
         bot.refreshPositionAndAngles(center.getX(), center.getY(), center.getZ(), yaw, 0);
         world.spawnEntity(bot);
         world.playSound(null, pos, SoundEvents.ENTITY_IRON_GOLEM_REPAIR, SoundCategory.BLOCKS, 1f, 1f);
@@ -195,13 +182,7 @@ public class DeactivatedRobotBlock extends HorizontalFacingBlock {
     @Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         if (!state.get(CONNECTED) && random.nextInt(6) == 0) {
-            world.addParticleClient(
-                    ParticleTypes.WHITE_SMOKE,
-                    pos.getX() + 0.5,
-                    pos.getY() + 0.5,
-                    pos.getZ() + 0.5,
-                    0.0, 0.04, 0.0
-            );
+            world.addParticleClient(ParticleTypes.WHITE_SMOKE, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0.0, 0.04, 0.0);
         }
         super.randomDisplayTick(state, world, pos, random);
     }
