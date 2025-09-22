@@ -1,13 +1,20 @@
 {
   "container.core_botics.entropy": "Bioray Collector",
   "container.infusion_matrix": "Bioray Infusion Matrix",
-  "gui.core_botics.entropyscreen.label_stored_entropy": "Stored Bioray: %d/%d",
+  "gui.core_botics.label.stored_entropy": "Stored Bioray: %d/%d",
   "item.core_botics.bioray_collector": "Bioray Collector",
-  "item.core_botics.conversion_card": "Conversion Card",
+  "item.core_botics.bioray_pickaxe": "Bioray Pickaxe",
+  "item.core_botics.card_remover_speed": "Speed Remover Card",
+  "item.core_botics.card_remover_tick": "Tick Remover Card",
+  "item.core_botics.conversion_card": "Conversion Upgrade Card",
+  "item.core_botics.convert_tool": "Convert Tool",
   "item.core_botics.deactivated_robot": "Deactivated Robot",
+  "item.core_botics.flying_card": "Flying Card",
   "item.core_botics.infusion_matrix": "Infusion Matrix",
   "item.core_botics.infusion_pedestal": "Infusion Pedestal",
-  "item.core_botics.speed_card": "Speed Card",
+  "item.core_botics.speed_card": "Speed Upgrade Card",
+  "item.core_botics.tick_card": "Tick Upgrade Card",
+  "item.core_botics.tick_card.tooltip": "Boosts tick speed of adjacent blocks. Stacks up to 10 on the block Bioray Collector",
   "itemGroup.core_botics": "Core Botics",
   "message.no_collector_block_below": "Block will not be active. Place a collector below it to activate"
 }

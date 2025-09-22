@@ -38,14 +38,22 @@ public class LangProvider extends FabricLanguageProvider {
 
 
 
-        translationBuilder.add(ItemInit.SpeedCard, "Speed Card");
-        translationBuilder.add(ItemInit.ConversionCard, "Conversion Card");
+        translationBuilder.add(ItemInit.SpeedCard, "Speed Upgrade Card");
+        translationBuilder.add(ItemInit.tickUpgradeCard, "Tick Upgrade Card");
+        translationBuilder.add(ItemInit.CONVERT_TOOL, "Convert Tool");
+        translationBuilder.add(ItemInit.FLYING_CARD, "Flying Card");
+        translationBuilder.add(ItemInit.BIORAY_PICKAXE, "Bioray Pickaxe");
+        translationBuilder.add(ItemInit.ConversionCard, "Conversion Upgrade Card");
+        translationBuilder.add(ItemInit.SPEED_CARD_REMOVER, "Speed Remover Card");
+        translationBuilder.add(ItemInit.TICK_CARD_REMOVER, "Tick Remover Card");
 
-        translationBuilder.add("gui.core_botics.entropyscreen.label_stored_entropy", "Stored Bioray: %d/%d");
+        translationBuilder.add("gui.core_botics.label.stored_entropy", "Stored Bioray: %d/%d");
         translationBuilder.add("container.core_botics.entropy", "Bioray Collector");
         translationBuilder.add("container.infusion_matrix", "Bioray Infusion Matrix");
         translationBuilder.add("message.no_collector_block_below", "Block will not be active. Place a collector below it to activate");
 
+
+        translationBuilder.add("item.core_botics.tick_card.tooltip", "Boosts tick speed of adjacent blocks. Stacks up to 10. on only Bioray Collector");
 
         addText(translationBuilder, MODJAM_ITEM_GROUP.getDisplayName(), "Core Botics");
     }

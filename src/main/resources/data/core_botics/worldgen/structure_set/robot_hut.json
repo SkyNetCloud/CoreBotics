@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "core_botics:robot_hut",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 40,
+    "separation": 12,
+    "salt": 123456789
+  }
+}

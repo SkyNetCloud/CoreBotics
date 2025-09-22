@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 3,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:iron_ingot",
+          "weight": 3
+        },
+        {
+          "type": "item",
+          "name": "minecraft:redstone",
+          "weight": 2
+        },
+        {
+          "type": "item",
+          "name": "minecraft:copper_ingot",
+          "weight": 4
+        },
+        {
+          "type": "item",
+          "name": "core_botics:flying_card",
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}
