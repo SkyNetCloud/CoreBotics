@@ -1,0 +1,14 @@
+{
+  "type": "core_botics:bioray_infusion",
+  "bioray": 12,
+  "matrix": "minecraft:netherite_upgrade_smithing_template",
+  "pedestals": [
+    "minecraft:iron_ingot",
+    "minecraft:gold_ingot",
+    "minecraft:diamond"
+  ],
+  "result": {
+    "count": 1,
+    "id": "core_botics:conversion_card"
+  }
+}
