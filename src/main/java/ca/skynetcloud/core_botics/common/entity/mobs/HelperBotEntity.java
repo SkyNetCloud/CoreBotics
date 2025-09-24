@@ -1,9 +1,11 @@
 package ca.skynetcloud.core_botics.common.entity.mobs;
 
-import ca.skynetcloud.core_botics.common.entity.block.machine.BiorayInfusionMatrixEntity;
 import ca.skynetcloud.core_botics.common.init.EntityInit;
 import ca.skynetcloud.core_botics.common.init.ItemInit;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -192,10 +194,9 @@ public class HelperBotEntity extends AnimalEntity implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>("normal", 2, this::movingController));
-
     }
 
-    public PlayState movingController(AnimationTest<BiorayInfusionMatrixEntity> state){
+    public PlayState movingController(AnimationTest<HelperBotEntity> state){
         if (state.isMoving()) {
             return state.setAndContinue(Flying);
         }

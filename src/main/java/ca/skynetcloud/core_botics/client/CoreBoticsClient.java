@@ -1,30 +1,41 @@
 package ca.skynetcloud.core_botics.client;
 
-import ca.skynetcloud.core_botics.client.renderer.block.BiorayCollectorBlockEntityRenderer;
-import ca.skynetcloud.core_botics.client.renderer.block.BiorayInfsuinMatrixBlockEntityRenderer;
-import ca.skynetcloud.core_botics.client.renderer.block.InfusionPedestalEntityRenderer;
-import ca.skynetcloud.core_botics.client.renderer.entity.HelperRobotRenderer;
-import ca.skynetcloud.core_botics.client.screen.machine.BiorayCollectorInfoScreen;
-import ca.skynetcloud.core_botics.client.screen.machine.BiorayInfusionMatrixScreen;
-import ca.skynetcloud.core_botics.common.init.BlockEntityInit;
-import ca.skynetcloud.core_botics.common.init.EntityInit;
-import ca.skynetcloud.core_botics.common.init.ScreenHandlerInit;
+import ca.skynetcloud.core_botics.client.init.KeyBindingInit;
+import ca.skynetcloud.core_botics.client.init.RendererInit;
+import ca.skynetcloud.core_botics.client.init.ScreenHandlerInit;
+import ca.skynetcloud.core_botics.common.entity.mobs.QuadToBikeEntity;
+import ca.skynetcloud.core_botics.common.network.payloads.RideModeTogglePayload;
+import ca.skynetcloud.core_botics.common.network.payloads.VehicleInputPayload;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.minecraft.client.gui.screen.ingame.HandledScreens;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+
 
 public class CoreBoticsClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        BlockEntityRendererFactories.register(BlockEntityInit.BIORAY_COLLECTOR_ENTITY,  BiorayCollectorBlockEntityRenderer::new);
-        BlockEntityRendererFactories.register(BlockEntityInit.INFUSION_MATRIX_ENTITY,  BiorayInfsuinMatrixBlockEntityRenderer::new);
-        BlockEntityRendererFactories.register(BlockEntityInit.INFUSION_PEDESTAL_ENTITY,  InfusionPedestalEntityRenderer::new);
-        EntityRendererRegistry.register(EntityInit.HELPER_BOT_ENTITY, HelperRobotRenderer::new);
-        HandledScreens.register(ScreenHandlerInit.BIORAY_COLLECTOR_SCREEN_HANDLER, BiorayCollectorInfoScreen::new);
-        HandledScreens.register(ScreenHandlerInit.BIORAY_INFUSION_MATRIX_SCREEN_HANDLER, BiorayInfusionMatrixScreen::new);
+        RendererInit.initialize();
+        ScreenHandlerInit.initialize();
+        KeyBindingInit.initialize();
 
+
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            while (KeyBindingInit.MODE_SWITCH.wasPressed()) {
+                if (client.player != null && client.player.getVehicle() instanceof QuadToBikeEntity mount) {
+                    RideModeTogglePayload payload = new RideModeTogglePayload(mount.getId());
+                    ClientPlayNetworking.send(payload);
+                }
+            }
+
+            if (client.player != null && client.player.getVehicle() instanceof QuadToBikeEntity mount) {
+                boolean ascendPressed = KeyBindingInit.ascendKey.isPressed();
+                boolean descendPressed = KeyBindingInit.descendKey.isPressed();
+
+                VehicleInputPayload payload = new VehicleInputPayload(mount.getId(), ascendPressed, descendPressed);
+                ClientPlayNetworking.send(payload);
+            }
+        });
     }
 
 

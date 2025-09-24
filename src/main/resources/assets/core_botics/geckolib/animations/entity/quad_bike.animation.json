@@ -1,0 +1,147 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"bike_mode": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 1,
+			"bones": {
+				"Back_Right_Wheel": {
+					"rotation": {
+						"0.0": [0, 0, 0]
+					}
+				},
+				"Back_Left_Wheel": {
+					"rotation": {
+						"0.0": [0, 0, 0]
+					}
+				},
+				"Front_Right_Wheel": {
+					"rotation": {
+						"0.0": [0, 0, 0]
+					}
+				},
+				"Front_Left_Wheel": {
+					"rotation": {
+						"0.0": [0, 0, 0]
+					}
+				},
+				"body": {
+					"position": {
+						"0.0": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"quad_mode": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 1,
+			"bones": {
+				"Back_Right_Wheel": {
+					"rotation": {
+						"0.0": [0, 0, 90]
+					}
+				},
+				"Back_Left_Wheel": {
+					"rotation": {
+						"0.0": [0, 0, -90]
+					}
+				},
+				"Front_Right_Wheel": {
+					"rotation": {
+						"0.0": [0, 0, 90]
+					}
+				},
+				"Front_Left_Wheel": {
+					"rotation": {
+						"0.0": [0, 0, -90]
+					}
+				},
+				"body": {
+					"position": {
+						"0.0": [0, 10, 0]
+					}
+				}
+			}
+		},
+		"convert": {
+			"animation_length": 8,
+			"bones": {
+				"Back_Right_Wheel": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.5": {
+							"vector": [0, 60, 0]
+						},
+						"3.0833": {
+							"vector": [28.12036, 55.02319, 33.07081],
+							"easing": "easeInSine"
+						},
+						"4.75": {
+							"vector": [48.08515, 40.81487, 59.55536],
+							"easing": "easeInSine"
+						},
+						"7.75": {
+							"vector": [89.62809, 0, 90.33715]
+						}
+					}
+				},
+				"Back_Left_Wheel": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.5": {
+							"vector": [0, -60, 0],
+							"easing": "easeOutSine"
+						},
+						"4.75": {
+							"vector": [45.08907, -43.48206, -55.44221],
+							"easing": "easeInOutSine"
+						},
+						"7.75": {
+							"vector": [91.64419, 0, -88.22627]
+						}
+					}
+				},
+				"Fornt_Right_Wheel": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.5": {
+							"vector": [0, -60, 0],
+							"easing": "easeOutSine"
+						},
+						"4.75": {
+							"vector": [45.08907, -43.48206, -55.44221],
+							"easing": "easeInOutSine"
+						},
+						"7.75": {
+							"vector": [91.64419, 0, -88.22627]
+						}
+					}
+				},
+				"Fornt_Left_Wheel": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.5": {
+							"vector": [0, 60, 0],
+							"easing": "easeOutSine"
+						},
+						"4.75": {
+							"vector": [48.08515, 40.81487, 59.55536],
+							"easing": "easeInOutSine"
+						},
+						"7.75": {
+							"vector": [89.62809, 0, 90.33715]
+						}
+					}
+				}
+			}
+		}
+	}
+}

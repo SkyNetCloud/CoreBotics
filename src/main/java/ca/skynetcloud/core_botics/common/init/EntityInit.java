@@ -1,6 +1,7 @@
 package ca.skynetcloud.core_botics.common.init;
 
 import ca.skynetcloud.core_botics.common.entity.mobs.HelperBotEntity;
+import ca.skynetcloud.core_botics.common.entity.mobs.QuadToBikeEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
@@ -13,6 +14,7 @@ import static ca.skynetcloud.core_botics.CoreBoticsMain.id;
 public class EntityInit {
 
     public static final EntityType<HelperBotEntity> HELPER_BOT_ENTITY = Registry.register(Registries.ENTITY_TYPE, id("helper_bot_entity"), EntityType.Builder.<HelperBotEntity>create(HelperBotEntity::new, SpawnGroup.AMBIENT).dimensions(2, 4).build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, id("helper_bot_entity"))));
+    public static final EntityType<QuadToBikeEntity> BIKE_ENTITY = Registry.register(Registries.ENTITY_TYPE, id("bike_entity"), EntityType.Builder.<QuadToBikeEntity>create(QuadToBikeEntity::new, SpawnGroup.MISC).dimensions(1.3964844F, 1.6F).eyeHeight(1.52F).build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, id("bike_entity"))));
 
     public static void initialize() {
     }
