@@ -1,8 +1,7 @@
 package ca.skynetcloud.core_botics.client.screen.handler;
 
-import ca.skynetcloud.core_botics.common.entity.block.machine.BiorayCollectorEntity;
+import ca.skynetcloud.core_botics.client.init.ScreenHandlerInit;
 import ca.skynetcloud.core_botics.common.entity.block.machine.BiorayInfusionMatrixEntity;
-import ca.skynetcloud.core_botics.common.init.ScreenHandlerInit;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -11,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ArrayPropertyDelegate;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
 

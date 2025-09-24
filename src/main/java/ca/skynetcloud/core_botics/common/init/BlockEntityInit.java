@@ -1,8 +1,8 @@
 package ca.skynetcloud.core_botics.common.init;
 
-import ca.skynetcloud.core_botics.common.entity.block.machine.PedestalBlockEntity;
 import ca.skynetcloud.core_botics.common.entity.block.machine.BiorayCollectorEntity;
 import ca.skynetcloud.core_botics.common.entity.block.machine.BiorayInfusionMatrixEntity;
+import ca.skynetcloud.core_botics.common.entity.block.machine.PedestalBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;

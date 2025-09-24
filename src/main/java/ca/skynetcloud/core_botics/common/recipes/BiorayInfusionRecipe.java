@@ -15,7 +15,7 @@ import java.util.List;
 
 public record BiorayInfusionRecipe(Ingredient matrix, List<Ingredient> pedestals, ItemStack output, int bioray) implements Recipe<BiorayInfusionRecipeInput> {
 
-
+    @SuppressWarnings("unused")
     public DefaultedList<Ingredient> getIngredients() {
         DefaultedList<Ingredient> list = DefaultedList.of();
         list.add(matrix);
@@ -23,7 +23,7 @@ public record BiorayInfusionRecipe(Ingredient matrix, List<Ingredient> pedestals
         return list;
     }
 
-
+    @SuppressWarnings("unused")
     public boolean requires(ItemStack stack) {
         if (stack.isEmpty()) return false;
 
@@ -63,7 +63,7 @@ public record BiorayInfusionRecipe(Ingredient matrix, List<Ingredient> pedestals
                 }
             }
 
-            if (!matched) return false; // one required pedestal not found
+            if (!matched) return false;
         }
 
         return true;

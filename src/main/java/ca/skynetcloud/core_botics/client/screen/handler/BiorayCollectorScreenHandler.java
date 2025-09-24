@@ -1,7 +1,7 @@
 package ca.skynetcloud.core_botics.client.screen.handler;
 
+import ca.skynetcloud.core_botics.client.init.ScreenHandlerInit;
 import ca.skynetcloud.core_botics.common.entity.block.machine.BiorayCollectorEntity;
-import ca.skynetcloud.core_botics.common.init.ScreenHandlerInit;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;

@@ -1,13 +1,11 @@
 package ca.skynetcloud.core_botics.client.screen.machine;
 
-import ca.skynetcloud.core_botics.client.screen.handler.BiorayCollectorScreenHandler;
 import ca.skynetcloud.core_botics.client.screen.handler.BiorayInfusionMatrixScreenHandler;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import static ca.skynetcloud.core_botics.CoreBoticsMain.MODID;

@@ -1,10 +1,10 @@
 package ca.skynetcloud.core_botics.common.entity.block.machine;
 
 import ca.skynetcloud.core_botics.CoreBoticsMain;
+import ca.skynetcloud.core_botics.common.accessor.FurnaceAccessor;
 import ca.skynetcloud.core_botics.common.block.machine.BiorayCollectorBlock;
 import ca.skynetcloud.core_botics.common.init.BlockEntityInit;
 import ca.skynetcloud.core_botics.common.init.BlockInit;
-import ca.skynetcloud.core_botics.common.accessor.FurnaceAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -42,7 +42,8 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
 
-import static net.minecraft.block.Blocks.*;
+import static net.minecraft.block.Blocks.SCULK;
+import static net.minecraft.block.Blocks.WITHER_ROSE;
 
 public class BiorayCollectorEntity extends BlockEntity implements GeoBlockEntity, BlockEntityTicker<BiorayCollectorEntity> {
 

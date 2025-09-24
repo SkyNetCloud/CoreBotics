@@ -27,6 +27,7 @@ public class ItemInit {
     public static final Item TICK_CARD_REMOVER  = Registry.register(Registries.ITEM, id("card_remover_tick"),  new CardRemoverItem(new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("card_remover_tick"))), ItemInit.tickUpgradeCard));
     public static final Item CONVERT_TOOL  = Registry.register(Registries.ITEM, id("convert_tool"),  new ConvertTool(new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("convert_tool")))));
     public static final Item BIORAY_PICKAXE = Registry.register(Registries.ITEM, id("bioray_pickaxe"), new BiorayPickaxe(new Item.Settings().pickaxe(ToolMaterial.NETHERITE, 10, 50).registryKey(RegistryKey.of(RegistryKeys.ITEM, id("bioray_pickaxe")))));
+    public static final Item CARD_BASE = Registry.register(Registries.ITEM, id("card_base"), new Item(new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id("card_base")))));
 
 
 
